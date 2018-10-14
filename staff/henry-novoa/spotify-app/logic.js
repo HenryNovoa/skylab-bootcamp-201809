@@ -1,85 +1,57 @@
 const logic = {
-    searchArtists(query) {
+
+    call(path){
         return new Promise((resolve, reject) => {
             var xhr = new XMLHttpRequest()
-
             xhr.addEventListener('load', function () {
                 var res = JSON.parse(xhr.responseText)
-                debugger;
-                resolve(res.artists.items)
+                if(!(res.artists)){
+                resolve(res.items)
+                }
+                else{resolve(res.artists.items)}
             })
-
             xhr.addEventListener('error', function () {
                 reject() // TODO
             })
-
-            xhr.open('get', 'https://api.spotify.com/v1/search?type=artist&query=' + query)
-
-            var token = 'BQC82s5sAVZKTv0svehRvZO8qSAEk7LVW1hJhjaCVPun4yTdknfxIn9UX-WOfC_PYT8xIqo7cqKwraZTCa0Ff-YdycIz-x_jZ_anptmY7SR1ccObKhTN4Tp0rpfqCwM5J9PSnavQs0N9'
-
+            xhr.open('get', 'https://api.spotify.com/v1/'+path)
+            var token = 'BQCRC3nA3YEnVHO8K5xBSqYuvqiTspg6C9ashy6FaZksxvaiKw0hUbhiiakka4w45Y_SkXoFC0ILtWzVny8WTzA8FAFKoeNxaPgdeYj4JX8ZI028Umm-e02yeLCtwzQ-kF1S1-mfTo4o'
             xhr.setRequestHeader('authorization', 'Bearer ' + token)
-
             xhr.send()
         })
     },
+    
+    searchArtists(query) {
+        if (typeof query !== 'string') throw TypeError(query + ' is not a string');
+        if (!query.trim().length) throw Error('query is empty or blank');
+        return this.call('search?type=artist&query=' + query);
+    },
+
+
 
     searchAlbums(id) {
-        // TODO
+        
+        if (typeof id !== 'string') throw TypeError(id + ' is not a string');
 
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest()
+        if (!id.trim().length) throw Error('id is empty or blank');
 
-            xhr.addEventListener('load', function () {
-                var res = JSON.parse(xhr.responseText)
-            
-                resolve(res.items)
-                console.log(res.items)
-            })
-
-            xhr.addEventListener('error', function () {
-                reject() // TODO
-            })
-
-            xhr.open('get', 'https://api.spotify.com/v1/artists/'+id+'/albums');
-
-            var token = 'BQC82s5sAVZKTv0svehRvZO8qSAEk7LVW1hJhjaCVPun4yTdknfxIn9UX-WOfC_PYT8xIqo7cqKwraZTCa0Ff-YdycIz-x_jZ_anptmY7SR1ccObKhTN4Tp0rpfqCwM5J9PSnavQs0N9'
-
-            xhr.setRequestHeader('authorization', 'Bearer ' + token)
-
-            xhr.send()
-        })
+        return this.call('artists/'+id+'/albums')
+       
     },
     searchSongs(id) {
-        // TODO
+        
 
-        return new Promise((resolve, reject) => {
-            var xhr = new XMLHttpRequest()
+        if (typeof id !== 'string') throw TypeError(id + ' is not a string');
 
-            xhr.addEventListener('load', function () {
-                var res = JSON.parse(xhr.responseText)
-            
-                resolve(res.items)
-                console.log(res.items)
-            })
+        if (!id.trim().length) throw Error('id is empty or blank');
 
-            xhr.addEventListener('error', function () {
-                reject() // TODO
-            })
-
-            xhr.open('get', `https://api.spotify.com/v1/albums/${id}/tracks`);
-
-            var token = 'BQC82s5sAVZKTv0svehRvZO8qSAEk7LVW1hJhjaCVPun4yTdknfxIn9UX-WOfC_PYT8xIqo7cqKwraZTCa0Ff-YdycIz-x_jZ_anptmY7SR1ccObKhTN4Tp0rpfqCwM5J9PSnavQs0N9'
-
-            xhr.setRequestHeader('authorization', 'Bearer ' + token)
-
-            xhr.send()
-        })
+        return this.call(`albums/${id}/tracks`)
+       
 
     },
 
     playSong(url){
-        
 
+        $player.attr('src', '' + url + '')
 
     }
 

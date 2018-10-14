@@ -12,11 +12,11 @@ describe('logic', () => {
         })
     })
 
-    describe('list albums', () => {
+    describe('show albums', () => {
         it('should succeed on matching query', () => {
             var id = '6tbjWDEIzxoDsBA1FuhfPW' // madonna
 
-            return logic.listAlbums(id)
+            return logic.searchAlbums(id)
                 .then(albums => {
                     expect(albums).toBeDefined()
 
@@ -24,4 +24,13 @@ describe('logic', () => {
                 })
         })
     })
+
+    describe('show songs'), () => {
+        it('should suceed on showing songs from matching query', () => {
+
+
+
+            
+        })
+    }
 })
