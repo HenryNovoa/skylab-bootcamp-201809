@@ -17,6 +17,6 @@ $form.submit(event => {
         .then(artists => {
             view.listArtist(artists)
         })
-        .catch(console.error)
+        //.catch(console.error)
 })
 
