@@ -9,8 +9,10 @@ const logic = {
                     resolve(res.items)
                 }
                 else {
-                    if (!(res.artists.items.length)) throw Error('could not find any matches')
-                    resolve(res.artists.items)
+                  //  if (!(res.artists.items.length)) throw Error('could not find any matches')
+                    if(res.error){ reject(res.error.message)
+                    }else{
+                    resolve(res.artists.items) }
                 }
             })
             xhr.addEventListener('error', function () {

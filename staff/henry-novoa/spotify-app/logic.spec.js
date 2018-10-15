@@ -149,7 +149,7 @@ describe('logic', () => {
             expect(function () {
                 logic.searchSongs('');
             }).toThrowError(Error, 'id is empty or blank');
-        })
+         })
 
         it('should throw error on blank id', () => {
             expect(function () {
