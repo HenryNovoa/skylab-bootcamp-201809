@@ -1,11 +1,11 @@
 
-counter = 0
-function recursiveForEach(nums,callback){
+
+function recursiveForEach(nums,callback,counter = 0){
     
-    if(counter !== nums.length){
+    if(counter < nums.length){
         callback(nums[counter],counter)
-        counter++
-        recursiveForEach(nums,callback)
+     
+        recursiveForEach(nums,callback,++counter)
     }
         
 }
