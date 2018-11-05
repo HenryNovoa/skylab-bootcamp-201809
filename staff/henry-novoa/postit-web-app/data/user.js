@@ -1,80 +1,128 @@
 const fs = require('fs')
 
-
 class User {
-    constructor(name, surname, username, password) {
-        this.id = Date.now()
+    constructor(user) {
+        const { id, name, surname, username, password, postits } = user
+
+        this.id = id || Date.now()
+
         this.name = name
         this.surname = surname
         this.username = username
         this.password = password
-        this.postits = []
+
+        this.postits = postits || []
     }
 
     save() {
-        let json = fs.readFileSync(User._file)
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
 
-        const users = JSON.parse(json)
+                const users = JSON.parse(json)
 
-        // const user = users.find(user => user.id === this.id)
+                const index = users.findIndex(user => user.id === this.id)
 
-        // if (!user) users.push(this)
-        // else {
-        //     user.name = this.name
-        //     user.surname = this.surname
-        //     user.username = this.username
-        //     user.password = this.password
-        // }
+                if (index < 0) users.push(this)
+                else users[index] = this
 
-        const index = users.findIndex(user => user.id === this.id)
+                json = JSON.stringify(users)
 
-        if (index < 0) users.push(this)
-        else users[index] = this
+                fs.writeFile(User._file, json, (err) => {
+                    if (err) return reject(err)
 
-        json = JSON.stringify(users)
-
-        fs.writeFileSync(User._file, json)
+                    resolve()
+                })
+            })
+        })
     }
-   
-    savePostit(post){
-        debugger
-        let json = fs.readFileSync(User._file)
 
-        const users = JSON.parse(json)
+    toObject() {
+        const { name, surname, username, password, postits } = this
 
-        const index = users.findIndex(user => user.id === this.id)
+        return { name, surname, username, password, postits }
+    }
 
-        if (index < 0) throw Error('user id not found')
-        else{ users[index].postits.push(post) }
-
-        json = JSON.stringify(users)
-
-        fs.writeFileSync(User._file, json)
-    }   
-    
     static findByUsername(username) {
-        const json = fs.readFileSync(User._file)
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
 
-        const users = JSON.parse(json)
+                const users = JSON.parse(json)
 
-        const user = users.find(user => user.username === username)
+                const user = users.find(user => user.username === username)
 
-        // TODO is user an instance of User?
-
-        return user
+                resolve(user ? new User(user) : undefined)
+            })
+        })
     }
 
     static findById(id) {
-        const json = fs.readFileSync(User._file)
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
 
-        const users = JSON.parse(json)
+                const users = JSON.parse(json)
 
-        const user = users.find(user => user.id === id)
+                const user = users.find(user => user.id === id)
 
-        // TODO is user an instance of User?
-
-        return user
+                resolve(user ? new User(user) : undefined)
+            })
+        })
     }
+
+    savePostit(postit) {
+
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
+
+                const users = JSON.parse(json)
+
+                const index = users.findIndex(user => user.id === this.id)
+                
+                if (index < 0) return reject(err)
+                
+                else users[index].postits.push(postit)
+
+                json = JSON.stringify(users)
+
+                fs.writeFile(User._file, json, (err) => {
+                    if (err) return reject(err)
+
+                    resolve()
+                })
+            })
+        })
+
+    }
+
+    killPostit(postitId) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
+
+                const users = JSON.parse(json)
+                debugger
+                const index = users.findIndex(user => user.id === this.id)
+                
+                if (index < 0) return reject(err)
+                
+                else users[index].postits = users[index].postits.filter(postit => postit.id !== Number(postitId))
+
+                json = JSON.stringify(users)
+
+                fs.writeFile(User._file, json, (err) => {
+                    if (err) return reject(err)
+
+                    resolve()
+                })
+            })
+        })
+
+
+    }
+
 }
 
 User._file = './data/users.json'

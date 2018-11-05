@@ -1,0 +1,7 @@
+extends layout
+block content
+      p Welcome #{name}!
+      form(action='/new-postit', method='POST')
+        input(type='text', name='text', placeholder='New Postit')
+        button(typ='submit') New Postit
+      a(href='/logout') logout
