@@ -70,6 +70,59 @@ class User {
             })
         })
     }
+
+    savePostit(postit) {
+
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
+
+                const users = JSON.parse(json)
+
+                const index = users.findIndex(user => user.id === this.id)
+                
+                if (index < 0) return reject(err)
+                
+                else users[index].postits.push(postit)
+
+                json = JSON.stringify(users)
+
+                fs.writeFile(User._file, json, (err) => {
+                    if (err) return reject(err)
+
+                    resolve()
+                })
+            })
+        })
+
+    }
+
+    killPostit(postitId) {
+        return new Promise((resolve, reject) => {
+            fs.readFile(User._file, (err, json) => {
+                if (err) return reject(err)
+
+                const users = JSON.parse(json)
+                debugger
+                const index = users.findIndex(user => user.id === this.id)
+                
+                if (index < 0) return reject(err)
+                
+                else users[index].postits = users[index].postits.filter(postit => postit.id !== Number(postitId))
+
+                json = JSON.stringify(users)
+
+                fs.writeFile(User._file, json, (err) => {
+                    if (err) return reject(err)
+
+                    resolve()
+                })
+            })
+        })
+
+
+    }
+
 }
 
 User._file = './data/users.json'

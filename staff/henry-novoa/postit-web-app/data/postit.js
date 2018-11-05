@@ -1,11 +1,9 @@
-const fs = require('fs')
-
 class Postit {
-    constructor(text) {
+    constructor(postit) {
+        const { id, text } = postit
 
-        this.id = Date.now()
+        this.id = id || Date.now()
         this.text = text
-
     }
 }
 

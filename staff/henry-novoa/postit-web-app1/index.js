@@ -88,13 +88,17 @@ app.post('/login', formBodyParser, (req, res) => {
 })
 
 app.get('/home', (req, res) => {
-    const { userId, postitId, error } = req.session
+    const id = req.session.userId
 
-    if (userId) {
+    if (id) {
         try {
-            logic.retrieveUser(userId)
-                .then(({ name, postits }) => res.render('home', { name, postits, postitId, error }))
+            debugger
+            logic.retrieveUser(id)
+                .then(({ name,postits}) => {
+                debugger
+                res.render('home', { name,postits})})
                 .catch(({ message }) => {
+                    debugger
                     req.session.error = message
 
                     res.redirect('/')
@@ -107,89 +111,68 @@ app.get('/home', (req, res) => {
     } else res.redirect('/')
 })
 
+app.get('/new-postit', (req, res) =>{
+    const id = req.session.userId
+
+    if (id) {
+        try{
+            logic.retrieveUser(id)
+                .then(({ name }) => res.render('new-postit', { name }))
+                .catch(({ message }) => {
+                    req.session.error = message
+
+                    res.redirect('/')
+                })
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+})
+
+app.post('/new-postit', formBodyParser, (req, res) => {
+    
+    const { text } = req.body
+    const id = req.session.userId
+    if(id){
+        try{
+            logic.newPostit(id, text)
+
+            res.redirect('/home')
+
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+
+})
+
+app.post('/delete-postit',formBodyParser,(req,res)=>{
+    
+    const {postitId} = req.body
+    const id = req.session.userId
+    if(id){
+        try{
+            logic.deletePostit(postitId, id)
+                
+            res.redirect('/home')
+
+        } catch({ message }) {
+            req.session.error = message
+
+            res.redirect('/')
+        }
+    } else res.redirect('/')
+
+})
+
 app.get('/logout', (req, res) => {
     req.session.userId = null
 
     res.redirect('/')
-})
-
-app.post('/postits', formBodyParser, (req, res) => {
-    const { operation } = req.body
-
-    try {
-        switch (operation) {
-            case 'add':
-                const { text } = req.body
-
-                logic.addPostit(req.session.userId, text)
-                    .then(() => res.redirect('/home'))
-                    .catch(({ message }) => {
-                        req.session.error = message
-
-                        res.redirect('/home')
-                    })
-
-                break
-            case 'remove':
-                const { postitId } = req.body
-
-                logic.removePostit(req.session.userId, Number(postitId))
-                    .then(() => res.redirect('/home'))
-                    .catch(({ message }) => {
-                        req.session.error = message
-
-                        res.redirect('/home')
-                    })
-                break
-            case 'edit':
-                {
-                    const { postitId } = req.body
-
-                    req.session.postitId = postitId
-
-
-                }
-
-                res.redirect('/home')
-                break
-
-            case 'save':
-                {
-                    const { postitId, text } = req.body
-
-                    logic.updatePostit(req.session.userId, Number(postitId), text)
-                        .then(() => {
-                            req.session.postitId = null
-                            res.redirect('/home')
-                        })
-                        .catch(({ message }) => {
-                            req.session.error = message
-
-                            res.redirect('/home')
-                        })
-                }
-                break
-
-            // {
-            //     const { postitId, text } = req.body
-
-            //     req.session.postitId = postitId
-
-            //     logic.updatePostit(postitId,text)
-            // }
-
-
-
-            // res.redirect('/home')
-            //     break
-            default:
-                res.redirect('/home')
-        }
-    } catch ({ message }) {
-        req.session.error = message
-
-        res.redirect('/home')
-    }
 })
 
 app.listen(port, () => console.log(`Server ${package.version} up and running on port ${port}`))
