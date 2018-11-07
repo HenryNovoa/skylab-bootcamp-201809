@@ -1,0 +1,23 @@
+[
+    {
+        "id": "e5f07855-fcff-4141-9b3d-394d8d4f9286",
+        "name": "manuel",
+        "surname": "barzi",
+        "username": "mb",
+        "password": "123",
+        "postits": [
+            {
+                "id": "bdc684c6-9e21-4a65-b583-52aebaec0486",
+                "text": "hola mundo"
+            }
+        ]
+    },
+    {
+        "id": "02aba948-ca84-48f9-9907-8f4a5148d73b",
+        "name": "henry",
+        "surname": "novoa",
+        "username": "hn",
+        "password": "123",
+        "postits": []
+    }
+]
