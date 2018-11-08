@@ -156,10 +156,11 @@ const logic = {
                 return res.data
             })
     },
-    updateProfile(newName, newSurname, password,newPassword){
-        debugger
+    updateProfile(newName, newSurname, password, newPassword){
         return fetch(`${this.url}/users/${this._userId}`, {
+            
             method: 'PATCH',
+            
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
