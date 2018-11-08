@@ -176,6 +176,38 @@ const logic = {
 
                 return user.save()
             })
+    },
+    modifyProfile(id, newname, newsurname,password, newpassword){
+
+        if (typeof id !== 'string') throw TypeError(`${id} is not a string`)
+
+        if (!id.trim().length) throw new ValueError('id is empty or blank')
+
+        if (typeof newname !== 'string') throw TypeError(`${newname} is not a string`)
+
+        if (!newname.trim().length) throw new ValueError('id is empty or blank')
+
+        if (typeof newsurname!== 'string') throw TypeError(`${newsurname} is not a string`)
+
+        if (!newsurname.trim().length) throw new ValueError('id is empty or blank')
+
+        if (typeof newpassword!== 'string') throw TypeError(`${newpassword} is not a string`)
+
+        if (!newpassword.trim().length) throw new ValueError('id is empty or blank')
+
+        return User.findById(id)
+            .then(user => {
+                
+                if(user.password !== password) throw Error('invalid password')
+                if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+                user.name = newname
+                user.surname = newsurname
+                user.password = newpassword
+                
+                return user.save()
+            })
+
     }
 }
 

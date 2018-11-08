@@ -27,6 +27,24 @@ router.post('/users', jsonBodyParser, (req, res) => {
     }, res)
 })
 
+
+router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+    routeHandler(() => {
+        const { sub, params: { id }, body: { newName, newSurname,  password , newPassword } } = req
+
+        if (id !== sub) throw Error('token sub does not match user id')
+
+
+
+        return logic.modifyProfile(id, newName, newSurname,password, newPassword)
+            .then(() => res.json({
+                message: 'profile modified'
+            }))
+
+    }, res)
+})
+
+
 router.post('/auth', jsonBodyParser, (req, res) => {
     routeHandler(() => {
         const { username, password } = req.body

@@ -5,8 +5,10 @@ import Postits from './components/Postits'
 import Error from './components/Error'
 import Landing from './components/Landing'
 import logic from './logic'
+import Profile from './components/Profile'
 import { Route, withRouter, Redirect } from 'react-router-dom'
 
+logic.url = 'http://localhost:5000/api'
 
 class App extends Component {
     state = { error: null }
@@ -37,13 +39,30 @@ class App extends Component {
         }
     }
 
+    handleProfileClick =() =>{
+      
+        this.props.history.push('/profile')
+    }
+
     handleLogoutClick = () => {
         logic.logout()
 
         this.props.history.push('/')
     }
+    handleUpdateProfile = (name,surname, newPassword, password) => {
+        try{
+        logic.updateProfile(name,surname,password,newPassword)
+            .then(()=> this.props.history.push('/postits'))
+            
+        }catch(err) {
+            this.setState({ error: err.message })   
+        }
+    }
+
 
     handleGoBack = () => this.props.history.push('/')
+
+    handleProfileGoBack = () => this.props.history.push('/postits')
 
     render() {
         const { error } = this.state
@@ -53,8 +72,9 @@ class App extends Component {
             <Route path="/register" render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
             <Route path="/login" render={() => !logic.loggedIn ? <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
             {error && <Error message={error} />}
-
+            <Route path="/profile" render={() => logic.loggedIn ? <Profile onUpdateProfile={this.handleUpdateProfile} onGoBack={this.handleProfileGoBack} /> : <Redirect to="/postits" />} />
             <Route path="/postits" render={() => logic.loggedIn ? <div>
+                <section><button onClick={this.handleProfileClick}>Profile</button></section>
                 <section><button onClick={this.handleLogoutClick}>Logout</button></section>
                 <Postits />
             </div> : <Redirect to="/" />} />
