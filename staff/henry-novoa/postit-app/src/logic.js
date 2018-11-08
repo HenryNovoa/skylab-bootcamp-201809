@@ -19,7 +19,6 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-
         return fetch('http://localhost:5000/api/users', {
             method: 'POST',
             headers: {
@@ -40,7 +39,7 @@ const logic = {
         if (!username.trim()) throw Error('username is empty or blank')
         if (!password.trim()) throw Error('password is empty or blank')
 
-        return fetch('https://skylabcoders.herokuapp.com/api/auth', {
+        return fetch('http://localhost:5000/api/auth', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8'
@@ -80,9 +79,9 @@ const logic = {
         if (!text.trim()) throw Error('text is empty or blank')
 
         this._postits.push(new Postit(text))
-
-        return fetch(`https://skylabcoders.herokuapp.com/api/user/${this._userId}`, {
-            method: 'PUT',
+        debugger
+        return fetch(`http://localhost:5000/api/users/${this._userId}/postits`, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=utf-8',
                 'Authorization': `Bearer ${this._token}`
@@ -156,4 +155,4 @@ const logic = {
 }
 
 //export default logic
- module.exports = logic
+module.exports = logic

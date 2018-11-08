@@ -13,7 +13,7 @@ const { expect } = require('chai')
 // debug -> $ mocha debug src/logic.spec.js --timeout 10000
 
 describe('logic', () => {
-    describe('users', () => {
+    false && describe('users', () => {
         !false && describe('register', () => {
             it('should succeed on correct data', () =>
                 logic.registerUser('John', 'Doe', `jd-${Math.random()}`, '123')
@@ -27,7 +27,7 @@ describe('logic', () => {
                     .then(() => logic.registerUser('John', 'Doe', username, '123'))
                     .catch(err => {
                         expect(err).not.to.be.undefined
-                        expect(err.message).to.equal(`user with username "${username}" already exists`)
+                        expect(err.message).to.equal(`username ${username} already registered`)
                     })
             })
 
@@ -40,7 +40,7 @@ describe('logic', () => {
             // TODO other cases
         })
 
-        false && describe('login', () => {
+        !false && describe('login', () => {
             describe('with existing user', () => {
                 let username, password
 
@@ -64,7 +64,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal(`user with username "${username}" does not exist`)
+                            expect(err.message).to.equal(`invalid username or password`)
                         })
                 })
 
@@ -74,7 +74,7 @@ describe('logic', () => {
                     return logic.login(username, password)
                         .catch(err => {
                             expect(err).not.to.be.undefined
-                            expect(err.message).to.equal('username and/or password wrong')
+                            expect(err.message).to.equal('invalid username or password')
                         })
                 })
             })
@@ -108,7 +108,7 @@ describe('logic', () => {
     })
 
     describe('postits', () => {
-        false && describe('create', () => {
+        !false && describe('create', () => {
             describe('with existing user', () => {
                 let username, password, text
 
