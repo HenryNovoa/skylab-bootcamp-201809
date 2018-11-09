@@ -1,10 +1,25 @@
-const fs = require('fs')
+require('dotenv').config()
+
+const { MongoClient } = require('mongodb')
 const { expect } = require('chai')
 const { User } = require('.')
 
+const { env: { MONGO_URL } } = process
+
 describe('User (model)', () => {
+    let client, users
+
     before(() => {
-        User._file = './data/users.spec.json'
+        client = new MongoClient(MONGO_URL, { useNewUrlParser: true })
+
+        return client.connect()
+            .then(() => {
+                const db = client.db('postit-test')
+
+                users = db.collection('users')
+
+                User._collection = users
+            })
     })
 
     describe('save', () => {
@@ -16,21 +31,16 @@ describe('User (model)', () => {
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
 
-            fs.writeFileSync(User._file, JSON.stringify([]))
+            return users.deleteMany()
         })
 
         it('should succeed on correct data', () =>
             new User({ name, surname, username, password }).save()
-                .then(() => {
-                    const json = fs.readFileSync(User._file)
+                .then(() => users.find().toArray())
+                .then(_users => {
+                    expect(_users.length).to.equal(1)
 
-                    const users = JSON.parse(json)
-
-                    debugger
-
-                    expect(users.length).to.equal(1)
-
-                    const [user] = users
+                    const [user] = _users
 
                     expect(user.name).to.equal(name)
                     expect(user.surname).to.equal(surname)
@@ -52,48 +62,44 @@ describe('User (model)', () => {
 
                 id = user.id
 
-                fs.writeFileSync(User._file, JSON.stringify([user]))
+                return user.save()
             })
 
             it('should succeed on correct username', () => {
-                let json = fs.readFileSync(User._file)
+                return users.find().toArray()
 
-                let users = JSON.parse(json)
+                    .then(_users => {
+                        expect(_users.length).to.equal(1)
 
-                expect(users.length).to.equal(1)
+                        const [user] = _users
 
-                let [user] = users
-
-                expect(user).to.exist
-
-                expect(user.name).to.equal(name)
-                expect(user.surname).to.equal(surname)
-                expect(user.username).to.equal(username)
-                expect(user.password).to.equal(password)
-
-                const newName = `${name}-${Math.random()}`
-
-                const _user = new User({ name: newName, surname, username, password })
-
-                _user.id = id
-
-                return _user.save()
-                    .then(() => {
-                        json = fs.readFileSync(User._file)
-
-                        users = JSON.parse(json)
-
-                        expect(users.length).to.equal(1)
-
-                        user = users[0]
-
-                        expect(user).to.exist
-
-                        expect(user.name).to.equal(newName)
+                        expect(user.name).to.equal(name)
                         expect(user.surname).to.equal(surname)
                         expect(user.username).to.equal(username)
                         expect(user.password).to.equal(password)
+
+                        const newName = `${name}-${Math.random()}`
+
+                        const _user = new User({ name: newName, surname, username, password })
+
+                        _user.id = id
+                        //_user._id = user._id
+
+                        return _user.save()
+                            .then(() => users.find().toArray())
+                            .then(_users => {
+                                expect(_users.length).to.equal(1)
+
+                                const [user] = _users
+
+                                expect(user.name).to.equal(newName)
+                                expect(user.surname).to.equal(surname)
+                                expect(user.username).to.equal(username)
+                                expect(user.password).to.equal(password)
+                            })
+
                     })
+
             })
         })
     })
@@ -106,8 +112,13 @@ describe('User (model)', () => {
             surname = `surname-${Math.random()}`
             username = `username-${Math.random()}`
             password = `password-${Math.random()}`
+            const user = new User({ name, surname, username, password })
 
-            fs.writeFileSync(User._file, JSON.stringify([new User({ name, surname, username, password })]))
+      
+            return user.save()
+
+
+          //  fs.writeFileSync(User._file, JSON.stringify([new User({ name, surname, username, password })]))
         })
 
         it('should succeed on correct username', () =>
@@ -116,7 +127,39 @@ describe('User (model)', () => {
                     expect(user).to.exist
                     expect(user).to.be.instanceOf(User)
 
+
                     expect(user.name).to.equal(name)
+                    expect(user.surname).to.equal(surname)
+                    expect(user.username).to.equal(username)
+                    expect(user.password).to.equal(password)
+                })
+
+        )
+    })
+    describe('findById', () => {
+        let id, name, surname, username, password
+
+        beforeEach(() => {
+            name = `name-${Math.random()}`
+            surname = `surname-${Math.random()}`
+            username = `username-${Math.random()}`
+            password = `password-${Math.random()}`
+            const user = new User({ name, surname, username, password })
+            id = user.id
+            return user.save()
+
+
+          //  fs.writeFileSync(User._file, JSON.stringify([new User({ name, surname, username, password })]))
+        })
+
+        it('should succeed on correct id', () =>
+            User.findById(id)
+                .then(user => {
+                    expect(user).to.exist
+                    
+                    expect(user).to.be.instanceOf(User)
+                    expect(user.id).to.equal(id)
+                    expect(user.name).to.equal (name)
                     expect(user.surname).to.equal(surname)
                     expect(user.username).to.equal(username)
                     expect(user.password).to.equal(password)
