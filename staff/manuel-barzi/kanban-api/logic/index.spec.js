@@ -1,11 +1,16 @@
 const mongoose = require('mongoose')
 const { User, Postit } = require('../data')
 const logic = require('.')
-const { AlreadyExistsError } = require('../errors')
+const { AlreadyExistsError, ValueError } = require('../errors')
+const fs = require('fs-extra')
+const path = require('path')
+const hasha = require('hasha')
+const streamToArray = require('stream-to-array')
+const text2png = require('text2png')
 
 const { expect } = require('chai')
 
-const MONGO_URL = 'mongodb://localhost:27017/postit-test'
+const MONGO_URL = 'mongodb://localhost:27017/kanban-test'
 
 // running test from CLI
 // normal -> $ mocha src/logic.spec.js --timeout 10000
@@ -47,6 +52,14 @@ describe('logic', () => {
 
             it('should fail on undefined name', () => {
                 expect(() => logic.registerUser(undefined, surname, username, password)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on empty name', () => {
+                expect(() => logic.registerUser('', surname, username, password)).to.throw(ValueError, 'name is empty or blank')
+            })
+
+            it('should fail on blank name', () => {
+                expect(() => logic.registerUser('   \t\n', surname, username, password)).to.throw(ValueError, 'name is empty or blank')
             })
 
             // TODO other test cases
@@ -227,7 +240,135 @@ describe('logic', () => {
                 })
             })
         })
+
+        describe('add collaborator', () => {
+            let user, user2
+
+            beforeEach(() => (user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })).save()
+                .then(() => (user2 = new User({ name: 'Pepe', surname: 'Grillo', username: 'pg', password: '123' })).save()))
+
+            it('should update on correct data and password', async () => {
+                const res = await logic.addCollaborator(user.id, user2.username)
+
+                expect(res).to.be.undefined
+
+                const _user = await User.findById(user.id)
+
+                expect(_user.id).to.equal(user.id)
+
+                expect(_user.collaborators.length).to.equal(1)
+
+                const [collaboratorId] = _user.collaborators
+
+                expect(collaboratorId.toString()).to.equal(user2.id)
+            })
+        })
+
+        describe('list collaborators', () => {
+            let user, user2
+
+            beforeEach(() => (user2 = new User({ name: 'Pepe', surname: 'Grillo', username: 'pg', password: '123' })).save()
+                .then(() => (user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123', collaborators: [user2.id] })).save()))
+
+            it('should update on correct data and password', async () => {
+                const collaborators = await logic.listCollaborators(user.id)
+
+                expect(collaborators.length).to.equal(1)
+
+                const [collaborator] = collaborators
+
+                const { _id, id, username, name, surname, password } = collaborator
+
+                expect(_id).to.be.undefined
+                expect(id).to.equal(user2.id)
+                expect(username).to.equal(user2.username)
+                expect(name).to.be.undefined
+                expect(surname).to.be.undefined
+                expect(password).to.be.undefined
+            })
+        })
+
+        describe('save photo', () => {
+            let user
+
+            beforeEach(() => (user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })).save())
+
+            it('should succeed on correct data', async () => {
+                const filename = 'profile.png'
+
+                const rs = fs.createReadStream(path.join(process.cwd(), `data/users/default/${filename}`))
+
+                await logic.saveUserPhoto(user.id, rs, filename)
+
+                expect(fs.existsSync(path.join(process.cwd(), `data/users/${user.id}/${filename}`))).to.be.true
+            })
+
+            afterEach(() => fs.removeSync(`data/users/${user.id}`))
+        })
+
+        describe('retrieve photo', () => {
+            let user
+
+            beforeEach(() => (user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })).save())
+
+            it('should succeed on correct data', async () => {
+                const userPhotoReadStream = await logic.retrieveUserPhoto(user.id)
+
+                const userPhotoHashReadStream = userPhotoReadStream.pipe(hasha.stream())
+
+                const defaultPhotoHashReadStream = fs.createReadStream('data/users/default/profile.png').pipe(hasha.stream())
+
+                const hashes = await Promise.all([
+                    streamToArray(userPhotoHashReadStream)
+                        .then(arr => arr[0]),
+                    streamToArray(defaultPhotoHashReadStream)
+                        .then(arr => arr[0])
+                ])
+
+                const [userPhotoHash, defaultPhotoHash] = hashes
+
+                expect(userPhotoHash).to.equal(defaultPhotoHash)
+            })
+
+            describe('when user already has a profile photo', () => {
+                let folder, file
+
+                beforeEach(() => {
+                    folder = `data/users/${user.id}`
+
+                    fs.mkdirSync(folder)
+
+                    file = 'photo.png'
+
+                    fs.writeFileSync(path.join(folder, file), text2png(':-)', { color: 'blue' }))
+                })
+
+                it('should succeed on correct data', async () => {
+                    const userPhotoReadStream = await logic.retrieveUserPhoto(user.id)
+    
+                    const userPhotoHashReadStream = userPhotoReadStream.pipe(hasha.stream())
+    
+                    const actualPhotoHashReadStream = fs.createReadStream(path.join(folder, file)).pipe(hasha.stream())
+    
+                    const hashes = await Promise.all([
+                        streamToArray(userPhotoHashReadStream)
+                            .then(arr => arr[0]),
+                        streamToArray(actualPhotoHashReadStream)
+                            .then(arr => arr[0])
+                    ])
+    
+                    const [userPhotoHash, actualPhotoHash] = hashes
+    
+                    debugger
+
+                    expect(userPhotoHash).to.equal(actualPhotoHash)
+                })
+            })
+
+            afterEach(() => fs.removeSync(`data/users/${user.id}`))
+        })
     })
+
 
     describe('postits', () => {
         describe('add', () => {
@@ -300,6 +441,39 @@ describe('logic', () => {
                 expect(_postit2.id).to.equal(__postit2.id)
                 expect(_postit2.text).to.equal(__postit2.text)
             })
+
+            describe('when user has postit assigned', () => {
+                let user2, postit3
+
+                beforeEach(async () => {
+                    user2 = new User({ name: 'Pepe', surname: 'Grillo', username: 'pg', password: '123' })
+
+                    postit3 = new Postit({ text: 'hello text 3', user: user2.id, assignedTo: user.id })
+
+                    await user2.save()
+                    await postit3.save()
+                })
+
+                it('should succeed on correct data', async () => {
+                    const postits = await logic.listPostits(user.id)
+
+                    expect(postits.length).to.equal(3)
+
+                    postits.forEach(_postit => {
+                        if (_postit.id === postit.id) {
+                            expect(_postit.text).to.equal(postit.text)
+                        } else if (_postit.id === postit2.id) {
+                            expect(_postit.text).to.equal(postit2.text)
+                        } else if (_postit.id === postit3.id) {
+                            expect(_postit.text).to.equal(postit3.text)
+
+                            expect(_postit.assignedTo).to.equal(user.id)
+                        } else {
+                            throw Error('postit does not match any of the expected ones')
+                        }
+                    })
+                })
+            })
         })
 
         describe('remove', () => {
@@ -349,7 +523,65 @@ describe('logic', () => {
                 expect(_postit.text).to.equal(newText)
             })
         })
+
+        describe('move', () => {
+            let user, postit, newStatus
+
+            beforeEach(async () => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                postit = new Postit({ text: 'hello text', user: user.id })
+
+                newStatus = 'DOING'
+
+                await Promise.all([user.save(), postit.save()])
+            })
+
+            it('should succeed on correct data', async () => {
+                const res = await logic.movePostit(user.id, postit.id, newStatus)
+
+                expect(res).to.be.undefined
+
+                const postits = await Postit.find()
+
+                expect(postits.length).to.equal(1)
+
+                const [_postit] = postits
+
+                expect(_postit.status).to.equal(newStatus)
+            })
+        })
+
+        describe('assign', () => {
+            let user, postit, user2
+
+            beforeEach(async () => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                postit = new Postit({ text: 'hello text', user: user.id })
+                user2 = new User({ name: 'Pepito', surname: 'Grillo', username: 'pg', password: '123' })
+
+                await Promise.all([user.save(), postit.save(), user2.save()])
+            })
+
+            it('should succeed on correct data', async () => {
+                const res = await logic.assignPostit(user.id, postit.id, user2.id)
+
+                expect(res).to.be.undefined
+
+                const postits = await Postit.find()
+
+                expect(postits.length).to.equal(1)
+
+                const [_postit] = postits
+
+                expect(_postit.id).to.equal(postit.id)
+                expect(_postit.user.toString()).to.equal(user.id)
+                expect(_postit.text).to.equal(postit.text)
+                expect(_postit.assignedTo.toString()).to.equal(user2.id)
+            })
+        })
     })
+
+    afterEach(() => Promise.all([User.deleteMany(), Postit.deleteMany()]))
 
     after(() => mongoose.disconnect())
 })
