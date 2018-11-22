@@ -1,0 +1,34 @@
+.navbar__header {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  background-color: skyblue;
+  justify-content: space-around;
+}
+
+.navbar__title {
+  font-size: 1em;
+}
+
+.navbar__menu {
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.searchbar {
+  background-image: url("../images/handymanimage.jpg");
+  height: 20vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+option {
+  font-size: 0.75em;
+}
+
+.error {
+  color: red;
+}
+
+/*# sourceMappingURL=style.css.map */
