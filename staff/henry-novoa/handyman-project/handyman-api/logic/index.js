@@ -4,12 +4,17 @@ const validate = require('../utils/validate')
 const fs = require('fs')
 const path = require('path')
 
-var cloudinary = require('cloudinary')
+const cloudinary = require('cloudinary')
+
+
+
+const { env: { CLOUDINARY_NAME,CLOUDINARY_API_KEY,CLOUDINARY_API_SECRET } } = process
+
 
 cloudinary.config({
-    cloud_name: 'skylab-handyman',
-    api_key: '772161371929274',
-    api_secret: '26OshHlvAVT4GLSzSMgzSMLl94M'
+    cloud_name: CLOUDINARY_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET
 })
 
 const logic = {
@@ -142,7 +147,7 @@ const logic = {
 
     createJob(details) {
 
-        const { title,userId, budget, contact, description, location, tags, pictures } = details
+        const { title,userId, budget, contact, description, location, tags, photo } = details
 
         validate([
             { key: 'id', value: userId, type: String },
@@ -151,6 +156,7 @@ const logic = {
             { key: 'contact', value: contact, type: String, optional: true },
             { key: 'description', value: description, type: String, optional: true },
             { key: 'location', value: location, type: String },
+            { key: 'photo', value: photo, type: String },
 
         ])
 
@@ -160,13 +166,49 @@ const logic = {
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const job = new Job({ title,budget, contact, description, location, tags, pictures, user: userId })
+            const job = new Job({ title,budget, contact, description, location, tags, photo, user: userId })
 
             await job.save()
         })()
 
     },
+    //fetches one job
+    getJob(userId,jobId) {
+        debugger
+        validate([
+            { key: 'userId', value: userId, type: String },
+            { key: 'jobId', value: jobId, type: String }
+        ])
 
+        return (async () => {
+            const user = await User.findById(userId).lean()
+
+            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+
+            const job = await Job.findById(jobId)
+                .lean()
+            debugger
+            
+                job.id = job._id.toString()
+
+                delete job._id
+
+                job.user = job.user.toString()
+
+                if (job.assignedTo)
+                    job.assignedTo = job.assignedTo.toString()
+
+                if(job.requestedBy)
+                    job.requestedBy.forEach((request,index)=>{
+                        job.requestedBy[index] = request.toString()
+                    })    
+
+                return job
+        
+        })()
+    },
+
+    //list jobs from one particular user
     listJobs(id) {
         validate([
             { key: 'id', value: id, type: String }
@@ -177,7 +219,7 @@ const logic = {
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const jobs = await Job.find({ $or: [{ user: user._id }, { assignedTo: user._id }] })
+        const jobs = await Job.find({ $or: [{ user: user._id }, {requestedBy: {$gte:user._id }}] })
                 .lean()
 
             jobs.forEach(job => {
@@ -189,6 +231,7 @@ const logic = {
 
                 if (job.assignedTo)
                     job.assignedTo = job.assignedTo.toString()
+    
 
                 return job
             })
@@ -203,7 +246,7 @@ const logic = {
         return (async () => {
         
             const jobs = await Job.find().lean()
-
+            
             jobs.forEach(job => {
                 job.id = job._id.toString()
 
@@ -268,7 +311,7 @@ const logic = {
 
         validate([
             { key: 'id', value: userId, type: String },
-            { key: 'title', value: title, type: String },
+            { key: 'title', value: newTitle, type: String, optional: true },
             { key: 'jobId', value: jobId, type: String },
             { key: 'assignedTo', value: assignedTo, type: String, optional: true },
             { key: 'budget', value: newBudget, type: String, optional: true },
@@ -279,9 +322,8 @@ const logic = {
 
         ])
         //validation for tags
-        newTags.forEach( tag  => {
-          if(tag ==! 'string') throw TypeError(`${tag} is not a string`)
-            
+        if(newTags) newTags.forEach( tag  => {
+          if(tag ==! 'string') throw TypeError(`${tag} is not a string`)    
         })
 
 
@@ -320,9 +362,10 @@ const logic = {
             { key: 'id', value: requestId, type: String },
             { key: 'jobId', value: jobId, type: String }
         ])
+        debugger
         return (async () => {
             const requester = await User.findById(requestId)
-
+            debugger
             if (!requester) throw new NotFoundError(`user with id ${requestId} not found`)
 
             const job = await Job.findById(jobId)
@@ -364,11 +407,10 @@ const logic = {
         })()
     },
 
-    rateJob(postedJobId,didJobId,jobId,rating,ratingText){
+    rateJob(postedJobId,jobId,rating,ratingText){
         validate([
             { key: 'id', value: postedJobId, type: String },
             { key: 'jobId', value: jobId, type: String },
-            { key: 'requesterId', value: didJobId, type: String },
             { key: 'rating', value: rating, type: Number, optional: true },
             { key: 'ratingtext', value: ratingText, type: String, optional: true }
         ])

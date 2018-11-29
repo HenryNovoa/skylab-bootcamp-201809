@@ -35,6 +35,10 @@ const Job = new Schema({
         type: [String],
         ref:'User'
     },
+
+    photo:{
+        type:String
+    },
   
     budget: {
         type: String,
@@ -54,7 +58,7 @@ const Job = new Schema({
     status: {
         type: String,
         default: 'TODO',
-        enum: ['TODO',  'DONE'],
+        enum: ['TODO','DOING',  'DONE'],
         required: true
     },
     

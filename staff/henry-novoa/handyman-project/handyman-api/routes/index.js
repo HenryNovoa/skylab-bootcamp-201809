@@ -7,20 +7,9 @@ const jwtVerifier = require('./jwt-verifier')
 const routeHandler = require('./route-handler')
 const Busboy = require('busboy')
 const fs = require('fs')
-const cloudinary = require('cloudinary')
 const jsonBodyParser = bodyParser.json()
 
 const router = express.Router()
-
-const { env: { JWT_SECRET } } = process
-
-
-cloudinary.config({
-    cloud_name: 'skylab-handyman',
-    api_key: '772161371929274',
-    api_secret: '26OshHlvAVT4GLSzSMgzSMLl94M'
-})
-
 
 
 //Register User
@@ -61,10 +50,9 @@ router.post('/auth', jsonBodyParser, (req, res) => {
 //Retrieve User
 router.get('/users/:id', [bearerTokenParser, jwtVerifier], (req, res) => {
     routeHandler(() => {
-        const { params: { id }, sub } = req
+        const { params: { id } } = req
 
-        if (id !== sub) throw Error('token sub does not match user id')
-
+        debugger
         return logic.retrieveUser(id)
             .then(user =>
                 res.json({
@@ -95,23 +83,6 @@ router.patch('/users/:id', [bearerTokenParser, jwtVerifier, jsonBodyParser], (re
 
 
 
-//add collaborator
-router.patch('/users/:id/collaborators', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
-    routeHandler(() => {
-        const { params: { id }, sub, body: { collaboratorUsername } } = req
-
-        if (id !== sub) throw Error('token sub does not match user id')
-
-        return logic.addCollaborator(id, collaboratorUsername)
-            .then(() =>
-                res.json({
-                    message: 'collaborator added'
-                })
-            )
-    }, res)
-})
-
-
 //list requestedBy
 router.get('/users/:id/jobs/:jobId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
@@ -127,6 +98,21 @@ router.get('/users/:id/jobs/:jobId', [bearerTokenParser, jwtVerifier, jsonBodyPa
             )
     }, res)
 })
+
+//ADD PHOTO CLOUDINARY
+router.patch('/upload', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
+
+    routeHandler(() => {
+        const { body: { base64Image} } = req
+
+        return logic._saveImage(base64Image)
+            .then(photo => res.status(200)
+                .json({ status: 'OK', photo }))
+           
+    }, res)
+})
+
+
 //save user photo
 router.post('/users/:id/photo', [bearerTokenParser, jwtVerifier], (req, res) => {
     routeHandler(() => {
@@ -170,24 +156,39 @@ router.get('/users/:id/photo', [bearerTokenParser, jwtVerifier], (req, res) => {
 //create job
 router.post('/users/:id/jobs', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id }, body:{ title,budget,contact,description,location,tags,pictures  } } = req
+        const { sub, params: { id }, body:{ title,budget,contact,description,location,tags,photo  } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.createJob({userId:id,title, budget,contact,description,location,tags,pictures})
+        return logic.createJob({userId:id,title, budget,contact,description,location,tags,photo})
             .then(() => res.json({
                 message: 'job created'
             }))
 
     }, res)
 })
+//get one job
+router.get('/users/:userId/jobs/:jobId/view', [bearerTokenParser, jwtVerifier], (req, res) => {
+    routeHandler(() => {
+        debugger
+        const { sub, params: { userId, jobId } } = req
+
+
+       
+        return logic.getJob(userId,jobId)
+            .then(job => res.json({
+                data: job
+            }))
+    }, res)
+})
+
 
 //get jobs from one User
 router.get('/users/:id/jobs', [bearerTokenParser, jwtVerifier], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id } } = req
-
-        if (id !== sub) throw Error('token sub does not match user id')
+        debugger
+        const { params: { id } } = req
+             
 
         return logic.listJobs(id)
             .then(jobs => res.json({
@@ -196,10 +197,13 @@ router.get('/users/:id/jobs', [bearerTokenParser, jwtVerifier], (req, res) => {
     }, res)
 })
 
+
+
 //get all jobs
-router.get('/jobs', [bearerTokenParser, jwtVerifier], (req, res) => {
+router.get('/users/:id/Alljobs', [bearerTokenParser, jwtVerifier], (req, res) => {
     routeHandler(() => {
-        const { sub } = req
+        
+        const { params: {id} , sub } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
@@ -216,7 +220,7 @@ router.get('/jobs', [bearerTokenParser, jwtVerifier], (req, res) => {
 router.put('/users/:id/jobs/:jobId', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id, jobId }, body: {newTitle ,newBudget,newContact,newDescription,newLocation,newStatus,assignedTo,newTags } } = req
-
+        debugger
         if (id !== sub) throw Error('token sub does not match user id')
 
         return logic.modifyJob({userId:id,jobId, newBudget,newTitle, newContact,newDescription,newLocation,newStatus,assignedTo,newTags})
@@ -276,12 +280,12 @@ router.delete('/users/:id/jobs/:jobId', [bearerTokenParser, jwtVerifier, jsonBod
 router.patch('/users/:id/jobs/:jobId/requests/', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
         const { sub, params: { id, jobId }, body: { requestId } } = req
-
-        if (id !== sub) throw Error('token sub does not match user id')
+debugger
+        if (requestId !== sub) throw Error('token sub does not match user id')
 
         return logic.requestJob(requestId,jobId)
             .then(() => res.json({
-                message: 'postit assigned'
+                message: 'job assigned'
             }))
     }, res)
 })
@@ -304,11 +308,12 @@ router.patch('/users/:id/jobs/:jobId/assign', [bearerTokenParser, jwtVerifier, j
 //rate job
 router.patch('/users/:id/jobs/:jobId/rate', [bearerTokenParser, jwtVerifier, jsonBodyParser], (req, res) => {
     routeHandler(() => {
-        const { sub, params: { id, jobId }, body: { requestId, rating, ratingText } } = req
+        debugger
+        const { sub, params: { id, jobId }, body: { rating, ratingText } } = req
 
         if (id !== sub) throw Error('token sub does not match user id')
 
-        return logic.assignPostit(id, requestId, jobId,rating,ratingText)
+        return logic.rateJob(id,jobId,rating,ratingText)
             .then(() => res.json({
                 message: 'job rated'
             }))

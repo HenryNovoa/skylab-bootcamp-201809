@@ -6,54 +6,94 @@ import CollaboratorModal from './CollaboratorModal'
 import NavBar from './NavBar'
 import SearchBar from './SearchBar'
 import PreJob from './PreJob'
+import Footer from './Footer'
 
 
 class Home extends Component {
-    state = { posts:[], jobs: [], liked: [], results: [], nameSearch: '',error : null }
+    state = { jobs: [], liked: [], results: [], nameSearch: '', error: null }
 
-    /* componentDidMount() {
+    componentDidMount() {
+        this.handleMount()
+    
+    }
 
-          try{
-         logic.listAllJobs()
-            .then(jobs => this.setState({ jobs }))
-            .catch(err => this.setState({error = err.message}))
-            }
-         // TODO error handling!
-         logic.listLikes()
-         logic.listPosts()
-         logic.listComments()
-     
-    }*/
+    handleMount =()=>{
+        try {
+           return logic.listAllJobs()
+                .then(jobs => {
+                    return this.setState({ jobs })
+                })
+                .catch(err => this.setState({ error: err.message }))
+        } catch ({ message }) {
+            this.setState({ error: message })
+        }
+    }
 
-    handleUserSearch = name =>{   
+    handleUserSearch = name => {
         this.props.onUserSearch(name)
     }
-    
-    handleCreateJobClick = event =>{
-        event.preventDefault()
 
+    handleOnCitySearch = city => {
+        
+        this.handleMount()
+        .then(()=>{
+            
+            
+            const cityToSearch = city
+            const allCities = 'all'
+            debugger
+            const searchedJobs = this.state.jobs.filter(job => {
+                if(cityToSearch === allCities) return job
+                
+                if(job.location === cityToSearch) return job
+            })
+            
+            this.setState({jobs : searchedJobs})
+            
+            
+            
+        })
+        
+        
+    }
+    
+    handleOnViewJobClick = (userId, jobId) => {
+        
+        this.props.onViewJobClick(userId, jobId)
+    }
+    
+
+    //Navbar functions
+    handleLogoutClick = () => {
+        
+        this.props.onLogoutClick()
+        
+    }
+    
+    handleProfileClick = () => {
+        
+        this.props.onProfileClick()
+    }
+    
+    handleCreateJobClick = event => {
+        event.preventDefault()
+    
         this.props.onCreateJobClick()
     }
-
-    handleJobSearch
-
-    handleOnViewJobClick = (jobId) =>{
-        logic.getJob(JobId)
-    }
-
-
-
-
-
+    
+    
+    
+    
     render() {
         return <div className="home">
-             <NavBar/>
-             <SearchBar/>
-            <button onClick={this.handleCreateJobClick}>Create a new Job</button>
+            <NavBar onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
+            <SearchBar onCitySearch={this.handleOnCitySearch} />
 
             <section className="home__post">
-                {this.state.jobs.map(job => <PreJob onViewJobClick={this.handleOnViewJobClick} key={job.id} id={job.id} location={job.location} title={job.title} budget={job.budget} />)}
+                {   this.state.jobs.length ?this.state.jobs.map(job => <PreJob onViewJobClick={this.handleOnViewJobClick} photo={job.photo} key={job.id} id={job.id} userId={job.user} location={job.location} title={job.title} budget={job.budget} />
+                ): <h2>Oops, there seems to be no results for your query</h2>}
             </section>
+            <Footer />
         </div>
     }
 }
