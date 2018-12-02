@@ -8,9 +8,8 @@ const routeHandler = require('./route-handler')
 const Busboy = require('busboy')
 const fs = require('fs')
 const jsonBodyParser = bodyParser.json()
-
 const router = express.Router()
-
+const { env: { JWT_SECRET } } = process
 
 //Register User
 router.post('/users', jsonBodyParser, (req, res) => {

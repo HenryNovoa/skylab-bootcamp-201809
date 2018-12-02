@@ -32,5 +32,10 @@
     "chai": "^4.2.0",
     "isomorphic-fetch": "^2.2.1",
     "sessionstorage": "^0.1.0"
-  }
+  },
+  "description": "// TODO",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

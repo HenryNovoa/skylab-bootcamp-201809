@@ -99,7 +99,7 @@ class OtherProfile extends Component {
                 <i onClick={this.handleGallery} className="fas fa-th icon icon__profile">Jobs completed</i> 
             </div>
              <section className="gallery">
-                {this.state.jobs && this.state.jobsDone.map(job =><div> <PreJob onViewJobClick={this.handleOnViewJobClick} key={job.id} id={job.id} userId={job.user} location={job.location} title={job.title} budget={job.budget} /> 
+                {this.state.jobs && this.state.jobsDone.map(job =><div> <PreJob onViewJobClick={this.handleOnViewJobClick} key={job.id} id={job.id} photo={job.photo} userId={job.user} location={job.location} title={job.title} budget={job.budget} /> 
                 <Rating ratingText={job.ratingText} ratingNumber={job.rating}/></div>)}
             </section>
         </div>

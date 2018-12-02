@@ -1,7 +1,6 @@
-const mongoose = require('mongoose')
-const { User, Job, Comment } = require('../data')
+const { mongoose, models: { User, Job, Comment } } = require('handyman-data')
 const logic = require('.')
-const { AlreadyExistsError, ValueError } = require('../errors')
+const { AuthError, AlreadyExistsError, ValueError,NotFoundError } = require('../errors')
 const chunk = require('./chunk-test')
 const fs = require('fs-extra')
 const path = require('path')
@@ -9,9 +8,20 @@ const hasha = require('hasha')
 const streamToArray = require('stream-to-array')
 const text2png = require('text2png')
 
+const cloudinary = require('cloudinary')
 const { expect } = require('chai')
 
 const MONGO_URL = 'mongodb://localhost:27017/handyman-test'
+
+const { env: { CLOUDINARY_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET } } = process
+
+
+cloudinary.config({
+    cloud_name: 'skylab-handyman',
+    api_key: '772161371929274',
+    api_secret: '26OshHlvAVT4GLSzSMgzSMLl94M'
+})
+
 
 // running test from CLI
 // normal -> $ mocha src/logic.spec.js --timeout 10000
@@ -53,6 +63,8 @@ describe('logic', () => {
                 expect(user.password).to.equal(password)
             })
 
+
+            //name
             it('should fail on undefined name', () => {
                 expect(() => logic.registerUser(undefined, surname, username, password)).to.throw(TypeError, 'undefined is not a string')
             })
@@ -64,6 +76,48 @@ describe('logic', () => {
             it('should fail on blank name', () => {
                 expect(() => logic.registerUser('   \t\n', surname, username, password)).to.throw(ValueError, 'name is empty or blank')
             })
+
+            //surname
+            it('should fail on undefined surname', () => {
+                expect(() => logic.registerUser(name, undefined, username, password)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on empty surname', () => {
+                expect(() => logic.registerUser(name, '', username, password)).to.throw(ValueError, 'surname is empty or blank')
+            })
+
+            it('should fail on blank surname', () => {
+                expect(() => logic.registerUser(name, '   \t\n', username, password)).to.throw(ValueError, 'surname is empty or blank')
+            })
+
+            //username
+            it('should fail on undefined username', () => {
+                expect(() => logic.registerUser(name, surname, undefined, password)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on empty username', () => {
+                expect(() => logic.registerUser(name, surname, '', password)).to.throw(ValueError, 'username is empty or blank')
+            })
+
+            it('should fail on blank username', () => {
+                expect(() => logic.registerUser(name, surname, '   \t\n', password)).to.throw(ValueError, 'username is empty or blank')
+            })
+
+            //password
+            it('should fail on undefined password', () => {
+                expect(() => logic.registerUser(name, surname, username, undefined)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on empty name', () => {
+                expect(() => logic.registerUser(name, surname, username, '')).to.throw(ValueError, 'password is empty or blank')
+            })
+
+            it('should fail on blank name', () => {
+                expect(() => logic.registerUser(name, surname, username, '   \t\n')).to.throw(ValueError, 'password is empty or blank')
+            })
+
+
+
 
             // TODO other test cases
         })
@@ -95,11 +149,65 @@ describe('logic', () => {
                 expect(_user.id).to.equal(id)
             })
 
+
+            it('should fail on incorrect password', async () => {
+
+                const notPassword = `notUserPassword-${Math.random()}`
+
+                const { username, password } = user
+
+                try {
+                    await logic.authenticateUser(username, notPassword)
+                } catch (err) {
+                    expect(err).to.be.an.instanceOf(AuthError)
+                    expect(err.message).to.equal('invalid username or password')
+                }
+            })
+
+            it('should fail on incorrect password', async () => {
+
+                const notUsername = `notUsername-${Math.random()}`
+
+                const { username, password } = user
+
+                try {
+                    await logic.authenticateUser(notUsername, password)
+                } catch (err) {
+                    expect(err).to.be.an.instanceOf(AuthError)
+                    expect(err.message).to.equal('invalid username or password')
+                }
+            })
+
+
+
+
+            //username
             it('should fail on undefined username', () => {
                 expect(() => logic.authenticateUser(undefined, user.password)).to.throw(TypeError, 'undefined is not a string')
             })
 
-            // TODO other test cases
+            it('should fail on empty username', () => {
+                expect(() => logic.authenticateUser('', user.password)).to.throw(ValueError, 'username is empty or blank')
+            })
+
+            it('should fail on blank username', () => {
+                expect(() => logic.authenticateUser('   \t\n', user.password)).to.throw(ValueError, 'username is empty or blank')
+            })
+
+            //password
+            it('should fail on undefined password', () => {
+                expect(() => logic.authenticateUser(user.username, undefined)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on empty password', () => {
+                expect(() => logic.authenticateUser(user.username, '')).to.throw(ValueError, 'password is empty or blank')
+            })
+
+            it('should fail on blank password', () => {
+                expect(() => logic.authenticateUser(user.username, '   \t\n')).to.throw(ValueError, 'password is empty or blank')
+            })
+
+        
         })
 
         describe('retrieve', () => {
@@ -126,6 +234,30 @@ describe('logic', () => {
                 expect(username).to.equal(user.username)
                 expect(password).to.be.undefined
                 expect(jobs).not.to.exist
+            })
+            it('should fail on incorrect id', async () => {
+
+                const notCorrectId = `notId-${Math.random()}`
+
+                try {
+                    await logic.retrieveUser(notCorrectId)
+                } catch (err) {
+                    expect(err).to.be.an.instanceOf(NotFoundError)
+                    expect(err.message).to.equal(`user with id ${notCorrectId} not found`)
+                }
+            })
+
+            
+            it('should fail on undefined id', () => {
+                expect(() => logic.retrieveUser(undefined)).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on empty id', () => {
+                expect(() => logic.retrieveUser('')).to.throw(ValueError, 'id is empty or blank')
+            })
+
+            it('should fail on blank id', () => {
+                expect(() => logic.retrieveUser('   \t\n')).to.throw(ValueError, 'id is empty or blank')
             })
         })
 
@@ -208,6 +340,32 @@ describe('logic', () => {
                 expect(() => logic.updateUser(undefined, name, surname, username, password, password)).to.throw(TypeError, 'undefined is not a string')
             })
 
+            it('should fail on non-existent user Id',async ()=>{
+                const notCorrectId = `notId-${Math.random()}`
+                
+                const { id, name, surname, username, password } = user
+                
+                try {
+                    await logic.updateUser(notCorrectId, name, surname, username, password, password)
+                } catch (err) {
+                    expect(err).to.be.an.instanceOf(NotFoundError)
+                    expect(err.message).to.equal(`user with id ${notCorrectId} not found`)
+                }
+            })
+
+            it('should fail on incorrect password',async ()=>{
+                const notCorrectPassword = `notPassword-${Math.random()}`
+                
+                const { id, name, surname, username, password } = user
+                
+                try {
+                    await logic.updateUser(id, name, surname, username, password, notCorrectPassword)
+                } catch (err) {
+                    expect(err).to.be.an.instanceOf(AuthError)
+                    expect(err.message).to.equal(`invalid password`)
+                }
+            })
+
             // TODO other test cases
 
             describe('with existing user', () => {
@@ -219,7 +377,7 @@ describe('logic', () => {
                     await user2.save()
                 })
 
-                it('should update on correct data and password', async () => {
+                it('should fail to update on already existing username', async () => {
                     const { id, name, surname, username, password } = user2
 
                     const newUsername = 'jd'
@@ -241,6 +399,8 @@ describe('logic', () => {
                         expect(_user.password).to.equal(password)
                     }
                 })
+        
+
             })
         })
 
@@ -269,6 +429,9 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
+
+                photo = 'dummy photo'
 
                 await user.save()
             })
@@ -276,14 +439,16 @@ describe('logic', () => {
             it('should succeed on correct data', async () => {
 
                 const userId = user.id
-
-                const res = await logic.createJob({ userId, pictures, budget, contact, description, location, tags })
+                
+                const res = await logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo })
 
                 expect(res).to.be.undefined
 
                 const jobs = await Job.find()
 
                 const [job] = jobs
+
+                expect(job.title).to.equal(title)
 
                 expect(job.description).to.equal(description)
 
@@ -292,6 +457,8 @@ describe('logic', () => {
                 expect(job.contact).to.equal(contact)
 
                 expect(job.location).to.equal(location)
+
+                expect(job.photo).to.equal(photo)
 
                 expect(job.tags).not.to.be.undefined
 
@@ -304,9 +471,100 @@ describe('logic', () => {
                 expect(job.user.toString()).to.equal(user.id)
             })
 
+
+            it('should fail on undefined id',async () => {
+              
+                //const userId = user.id
+                
+                const userId = undefined
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, 'undefined is not a string')
+            })
+
+            it('should fail on non-existent(valid) user Id',async ()=>{
+                const notCorrectId = `notId-${Math.random()}`
+                
+                const userId = notCorrectId
+            
+                try {
+                    await logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})
+                } catch (err) {
+                    expect(err).to.be.an.instanceOf(NotFoundError)
+                    expect(err.message).to.equal(`user with id ${notCorrectId} not found`)
+                }
+            })
+            it('should fail on non-string(number) id',async () => {
+              
+                const userId = 5
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${userId} is not a string`)
+            })
+
+            it('should fail on undefined title',async () => {
+              
+                const userId = user.id
+                
+                const title = undefined
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, 'undefined is not a string')
+            })
+           
+            it('should fail on non-string(number) title',async () => {
+              
+                const userId = user.id
+                
+                const title = 5
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${title} is not a string`)
+            })
+
+            it('should fail on non-string(number) budget',async () => {
+              
+                const userId = user.id
+                
+                const budget = 5
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${budget} is not a string`)
+            })
+            it('should fail on non-string(number) contact',async () => {
+              
+                const userId = user.id
+                
+                const contact = 5
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${contact} is not a string`)
+            })
+            it('should fail on non-string(number) description',async () => {
+              
+                const userId = user.id
+                
+                const description = 5
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${description} is not a string`)
+            })
+            it('should fail on non-string(number) location',async () => {
+              
+                const userId = user.id
+                
+                const location = 5
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${location} is not a string`)
+            })
+
+            it('should fail on non-string(number) photo url',async () => {
+              
+                const userId = user.id
+                
+                const photo = 5
+
+                expect(() => logic.createJob({ title, userId, pictures, budget, contact, description, location, tags, photo})).to.throw(TypeError, `${photo} is not a string`)
+            })
+
+
+
+
             // TODO other test cases
         })
-        describe('add photo', () => {
+        false && describe('add photo (to already existing job)', () => {
             let user
 
             beforeEach(async () => {
@@ -325,8 +583,11 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
+                photo = 'dummy2'
+
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
 
 
                 await user.save()
@@ -335,8 +596,8 @@ describe('logic', () => {
             })
             it('should succed on correct data', async () => {
 
-                debugger
-                const res = await logic.insertPhotoToJob(user.id, job.id,chunk)
+
+                const res = await logic.insertPhotoToJob(user.id, job.id, chunk)
 
                 expect(res).to.be.undefined
 
@@ -345,7 +606,56 @@ describe('logic', () => {
                 expect(_job.id).to.equal(job.id)
 
                 expect(_job.pictures.length).to.equal(1)
-                
+
+                expect(_job.pictures[0].toString()).to.exist
+
+
+            })
+
+        })
+        false && describe('upload photo', () => {
+            let user
+
+            beforeEach(async () => {
+                user = new User({ name: 'John', surname: 'Doe', username: 'jd', password: '123' })
+                user2 = new User({ name: 'Peter', surname: 'Griffin', username: 'pg', password: '123' })
+
+                pictures = []
+
+                budget = `50.${Math.random()}`
+
+                contact = '123@456.com'
+
+                description = `hello world-${Math.random()}`
+
+                location = 'barcelona'
+
+                tags = ['nevera', 'frio']
+
+                title = 'nevera'
+
+                photo = 'dummy2'
+
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
+
+
+                await user.save()
+                await job.save()
+                await Promise.all([user.save(), user2.save(), job.save()])
+            })
+            it('should successfully retrieve url', async () => {
+
+
+                const res = await logic.insertPhotoToJob(user.id, job.id, chunk)
+
+                expect(res).to.be.undefined
+
+                const _job = await Job.findById(job.id)
+
+                expect(_job.id).to.equal(job.id)
+
+                expect(_job.pictures.length).to.equal(1)
+
                 expect(_job.pictures[0].toString()).to.exist
 
 
@@ -353,7 +663,8 @@ describe('logic', () => {
 
         })
 
-    
+
+
 
         describe('rate Job', () => {
             let user, user2, job
@@ -374,8 +685,11 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
+                photo = 'dummy'
+
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
 
 
                 await user.save()
@@ -426,8 +740,8 @@ describe('logic', () => {
                         const rating = 4
 
                         const ratingText = 'good job!!'
-                        
-                        const res = await logic.rateJob(user.id, user2.id, job.id, rating, ratingText)
+
+                        const res = await logic.rateJob(user.id, job.id, rating, ratingText)
 
                         expect(res).to.be.undefined
 
@@ -471,12 +785,14 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
+
+                photo = 'dummy'
 
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
-                job2 = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
 
-
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
+                job2 = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
 
                 await user.save()
                 await job.save()
@@ -559,8 +875,37 @@ describe('logic', () => {
                 expect(_job2.pictures).not.to.be.undefined
             })
 
+            it('(Get one job) should succeed on correct data', async () => {
+                debugger
+                const _jobs = await Job.find()
 
-            it('(One Job) should succeed on correct data', async () => {
+                const [_job, _job2] = _jobs
+
+                const job = await logic.getJob(user.id, _job.id)
+
+                expect(_job.id).to.equal(job.id)
+
+                expect(_job.description).to.equal(job.description)
+
+                expect(_job.budget).to.equal(job.budget)
+
+                expect(_job.contact).to.equal(job.contact)
+
+                expect(_job.location).to.equal(job.location)
+
+                expect(_job.tags).not.to.be.undefined
+
+                expect(_job.pictures).not.to.be.undefined
+
+                expect(job).not.to.be.instanceof(Job)
+
+
+
+            })
+
+
+
+            it('(Jobs from one user) should succeed on correct data', async () => {
                 const jobs = await logic.listJobs(user.id)
 
                 const _jobs = await Job.find()
@@ -765,9 +1110,13 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
+
+                photo = 'dummy'
 
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
+
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
 
 
                 await user.save()
@@ -805,6 +1154,10 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
+
+                photo = 'dummy'
+
                 //Modifiers
                 newBudget = `30.${Math.random()}`
                 newContact = `123-${Math.random()}@456.com`
@@ -819,7 +1172,7 @@ describe('logic', () => {
 
 
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags, requestedBy: user2.id })
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags, requestedBy: user2.id })
 
 
                 await user.save()
@@ -888,8 +1241,11 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
+                photo = 'dummy'
+
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
 
 
                 await user.save()
@@ -933,18 +1289,18 @@ describe('logic', () => {
 
 
 
-                it('should correctly list users that request to do job',async () => {
+                it('should correctly list users that request to do job', async () => {
 
-                    const res = await logic.listRequestedBy(user.id,job.id)
+                    const res = await logic.listRequestedBy(user.id, job.id)
 
                     expect(res).to.exist
 
-                    expect(res[0].id).to.equal(user2.id) 
+                    expect(res[0].id).to.equal(user2.id)
                     expect(res[0].username).to.equal(user2.username)
 
 
 
-                    
+
 
 
                 })
@@ -972,8 +1328,11 @@ describe('logic', () => {
 
                 tags = ['nevera', 'frio']
 
+                title = 'nevera'
 
-                job = new Job({ pictures, user: user.id, budget, contact, description, location, tags })
+                photo = 'dummy'
+
+                job = new Job({ title, photo, pictures, user: user.id, budget, contact, description, location, tags })
 
 
                 await user.save()
@@ -1006,7 +1365,7 @@ describe('logic', () => {
                     expect(res).to.be.undefined
 
                     const jobs = await Job.find()
-                    
+
                     expect(jobs.length).to.equal(1)
 
                     const [_job] = jobs

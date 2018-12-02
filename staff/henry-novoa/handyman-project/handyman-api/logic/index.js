@@ -1,8 +1,9 @@
-const { User, Job } = require('../data')
+
 const { AlreadyExistsError, AuthError, NotAllowedError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
 const fs = require('fs')
 const path = require('path')
+const { models: { User ,Job, Comment } } = require('handyman-data')
 
 const cloudinary = require('cloudinary')
 
@@ -71,9 +72,22 @@ const logic = {
         validate([{ key: 'id', value: id, type: String }])
 
         return (async () => {
-            const user = await User.findById(id, { '_id': 0, password: 0, __v: 0 }).lean()
+               
+                let user
+            try{
+                user = await User.findById(id, { '_id': 0, password: 0, __v: 0 }).lean()
+            }catch(err){
+                const notFound = 'CastError'
+                if(err.name === notFound) throw new NotFoundError(`user with id ${id} not found`)
+                throw Error(err.message)
+            }
 
-            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+          
+            
+            
+            // const user = await User.findById(id, { '_id': 0, password: 0, __v: 0 }).lean()
+
+            // if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
             user.id = id
 
@@ -91,10 +105,14 @@ const logic = {
         ])
 
         return (async () => {
-            const user = await User.findById(id)
-
-            if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
+            let user
+            try{
+                user = await User.findById(id)
+            }catch(err){
+                const notFound = 'CastError'
+                if(err.name === notFound) throw new NotFoundError(`user with id ${id} not found`)
+                throw Error(err.message)
+            }
             if (user.password !== password) throw new AuthError('invalid password')
 
             if (username) {
@@ -118,6 +136,7 @@ const logic = {
         })()
     },
     insertPhotoToJob(userId ,jobId, chunk) {
+        
         validate([
             { key: 'id', value: jobId, type: String },
             { key: 'id', value: userId, type: String },
@@ -125,6 +144,7 @@ const logic = {
         ])
 
         return (async () => {
+           
 
             const user = await User.findById(userId)
 
@@ -148,7 +168,7 @@ const logic = {
     createJob(details) {
 
         const { title,userId, budget, contact, description, location, tags, photo } = details
-
+        debugger
         validate([
             { key: 'id', value: userId, type: String },
             { key: 'title', value: title, type: String },
@@ -156,15 +176,22 @@ const logic = {
             { key: 'contact', value: contact, type: String, optional: true },
             { key: 'description', value: description, type: String, optional: true },
             { key: 'location', value: location, type: String },
-            { key: 'photo', value: photo, type: String },
+            { key: 'photo', value: photo, type: String, optional:true },
 
         ])
 
 
         return (async () => {
-            const user = await User.findById(userId)
 
-            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+            let user
+            try{
+                user = await User.findById(userId)
+            }catch(err){
+                const notFound = 'CastError'
+                if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
+                throw Error(err.message)
+            }
+           
 
             const job = new Job({ title,budget, contact, description, location, tags, photo, user: userId })
 
@@ -174,7 +201,7 @@ const logic = {
     },
     //fetches one job
     getJob(userId,jobId) {
-        debugger
+        
         validate([
             { key: 'userId', value: userId, type: String },
             { key: 'jobId', value: jobId, type: String }
@@ -187,7 +214,6 @@ const logic = {
 
             const job = await Job.findById(jobId)
                 .lean()
-            debugger
             
                 job.id = job._id.toString()
 
@@ -362,10 +388,10 @@ const logic = {
             { key: 'id', value: requestId, type: String },
             { key: 'jobId', value: jobId, type: String }
         ])
-        debugger
+    
         return (async () => {
             const requester = await User.findById(requestId)
-            debugger
+            
             if (!requester) throw new NotFoundError(`user with id ${requestId} not found`)
 
             const job = await Job.findById(jobId)
