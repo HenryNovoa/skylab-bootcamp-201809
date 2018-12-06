@@ -46,7 +46,8 @@ class CollaboratorModal extends Component {
                     </div>
                     <div className="modal-body">
 
-                        <form onSubmit={this.onRateJobClick} >
+                        <form className='columns' onSubmit={this.onRateJobClick} >
+                            <div className='column'>
                             <label>Qualification</label>
 
                             <select onChange={this.handleRatingChange} defaultValue='none' >
@@ -58,10 +59,12 @@ class CollaboratorModal extends Component {
                                 <option value={4}>4</option>
                                 <option value={5}>5</option>
                             </select>
-
-                            <label>Text rating</label>
-                            <textarea defaultValue={this.state.text} onChange={this.handleChangeText} />
+                            </div>
+                            <div className='column'>
+                            <textarea placeholder='Rating Text here' defaultValue={this.state.text} onChange={this.handleChangeText} />
+                            </div>
                             <button type="submit">Submit</button>
+                           
                         </form>
                         {/* <select onChange={this.handleCollaboratorChange} defaultValue="none">
                             <option disabled="true" value="none">Choose a collaborator...</option>

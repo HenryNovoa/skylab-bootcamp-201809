@@ -1,13 +1,10 @@
 import React, { Component } from 'react'
-import logic from '../logic'
+import logic from '../../logic'
 import { throws } from 'assert';
-import Error from './Error'
-import CollaboratorModal from './CollaboratorModal'
-import NavBar from './NavBar'
-import {
-    Card, CardImg, CardText, CardBody, CardLink,
-    CardTitle, CardSubtitle, CardHeader, CardFooter, Button
-} from 'reactstrap';
+import Error from '../Error/Error'
+import CollaboratorModal from '../CollaboratorModal/CollaboratorModal'
+import NavBar from '../NavBar/NavBar'
+
 
 
 class Job extends Component {
@@ -135,7 +132,72 @@ class Job extends Component {
 
         return <div className='job'>
             <NavBar onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
-            <div>
+            {error && <Error message={error} />}
+            <div className="columns is-multiline is-centered has-text-centered">
+                <div className="column is-6 has-shadow card">
+                    <header className="card-header">
+                        <p className="card-header-title">
+                            {job.title}
+                        </p>
+                        {/* <a href="#" className="card-header-icon" aria-label="more options">
+                            <span className="icon">
+                                <i className="fas fa-angle-down" aria-hidden="true"></i>
+                            </span>
+                        </a> */}
+                    </header>
+
+                    <div className="card-image">
+                        <figure className="image is-4by3">
+                            <img src={photo ? photo : defaultPicture} />
+                        </figure>
+                    </div>
+                    <div className="card-content">
+                        <div className="media">
+                            {/* <div className="media-left">
+             <figure className="image is-48x48">
+              <img src="https://bulma.io/images/placeholders/96x96.png" alt="Placeholder image" />
+            </figure> 
+          </div> */}
+                            <div className="media-content">
+                                <p className="title is-4">Budget:{job.budget}</p>
+                                <p className="subtitle is-6">Location:{job.location}</p>
+                                <p className="subtitle is-6">Status:{job.status}</p>
+                                 {myJob ? <p className='subtitle is-6'>Assigned to: {job && this.state.assignedTo.username}</p> : null}
+                                <p className="title is-5">{job.description}</p>
+                                
+                               
+                            </div>
+                            <button className='button is-dark' onClick={this.handleBackClick}>Home</button>
+                            {(myJob && job.status !== jobIsDone) ? <button className='button is-danger is-small' onClick={this.handleRemoveClick}>Delete Job</button> : null}
+                        </div>
+                       
+                        {myJob ? <select defaultValue="none" onChange={this.handleRequestChange}>
+                           
+                            <option disabled={true} value="none">Users who requested job</option>
+
+                            {this.state.requestedBy.map(user => <option key={user.id} value={user.id}>{user.username}</option>)}
+                        </select> : (!done && !requested) ? <button className='button is-warning' onClick={this.handleRequestJob}>Request Job</button> : (!assigned) ? <p>You have requested to do this job</p> : <p>You have been assigned this job</p>}
+                        {(done && assigned) ? <p>You have completed this job</p> : null}
+                        
+                    </div>
+                    <footer className="card-footer">
+                     {(myJob && job.status === jobIsDoing) ? <button className='button card-footer-item is-success' onClick={this.handleFinishedClick}>Mark as finished</button> : null}
+                     
+                     {(myJob && !done) ? <div className='card-footer-item'><button className='button is-info' onClick={this.handleAssignJob}>Assign Job</button><button className='button is-primary' onClick={this.handleProfileView}>View Profile</button></div> : null}   
+                        {/* <a href="#" class="card-footer-item">Delete</a> */}
+                    </footer>
+                </div>
+            </div>
+
+
+
+          <CollaboratorModal modal={this.state.modal} onCloseModal={this.handleOnCloseModal} onRateJob={this.handleRateJob} />
+
+
+
+
+
+            {/* <div>
 
 
                 <Card body outline color="secondary">
@@ -158,7 +220,7 @@ class Job extends Component {
                         
                         {(myJob && job.status !== jobIsDone) ? <Button onClick={this.handleRemoveClick}>Delete Job</Button> : null}
                        
-                        {error && <Error message={error} />}
+                    
 
                         <CardFooter><div className='job__footer'> {myJob ? <select defaultValue="none" onChange={this.handleRequestChange}>
                            
@@ -176,42 +238,8 @@ class Job extends Component {
                         </CardFooter>
                     </CardBody>
                 </Card>
-                <CollaboratorModal modal={this.state.modal} onCloseModal={this.handleOnCloseModal} onRateJob={this.handleRateJob} />
-            </div>
-
-            <article className="post">
-                {/* <div className='image__container'>
-                <img src={job.photo}/>
-                </div>
-
-                <p>Title:{job && job.title}</p>
-
-                <p>Budget:{job && job.budget}</p>
-                <p>Description:{job && job.description}</p>
-                <p>Location:{job && job.location}</p>
-                <p>Status:{job && job.status}</p>
-
-                <p>Rating:{job && job.rating}</p>
-                {myJob ? <p>Assigned to: {job && this.state.assignedTo.username}</p> : null}
-                {myJob ? <select defaultValue="none" onChange={this.handleRequestChange}>
-                    <option disabled={true} value="none">Users who requested job</option>
-
-                    {this.state.requestedBy.map(user => <option value={user.id}>{user.username}</option>)}
-                </select> : (!done && !requested) ? <button onClick={this.handleRequestJob}>Request Job</button> : (!assigned) ? <p>You have requested to do this job</p> : <p>You have been assigned this job</p>}
-                {(done && assigned) ? <p>You have completed this job</p> : null}
-                {(myJob && !done) ? <div><button onClick={this.handleAssignJob}>Assign Job</button><button onClick={this.handleProfileView}>View Profile</button></div> : null} */}
-                {/* <select onChange={this.handleCollaboratorChange} defaultValue="none">
-                            <option disabled="true" value="none">Users who requested job</option>
-                            {job && job.requestedBy.map(({ id}) => <option value={id}>{id}</option>)}={this.state.job.description}/> }
-            </select> */}
-                {/* <button onClick={() => this.props.onDeleteJob(this.props.id)}><i className="far fa-trash-alt"></i></button> */}
-
-                {/* <select onChange={this.handleChangeStatus} defaultValue={this.props.status}><option value="TODO">TODO</option><option value="DOING">DOING</option><option value="REVIEW">REVIEW</option><option value="DONE">DONE</option></select> */}
-
-                {/* <button onClick={this.handleAssignCollaborator}><i className="fas fa-share-alt"></i></button> */}
-
-
-            </article>
+                
+            </div> */}
         </div>
     }
 }

@@ -1,9 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
+import Error from './components/Error/Error'
 import * as serviceWorker from './serviceWorker';
 import { HashRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './../node_modules/bulma/css/bulma.css';
+
 
 ReactDOM.render(<HashRouter><App /></HashRouter>, document.getElementById('root'));
 

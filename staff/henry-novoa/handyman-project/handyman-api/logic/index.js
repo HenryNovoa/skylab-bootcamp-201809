@@ -168,7 +168,7 @@ const logic = {
     createJob(details) {
 
         const { title,userId, budget, contact, description, location, tags, photo } = details
-        debugger
+        
         validate([
             { key: 'id', value: userId, type: String },
             { key: 'title', value: title, type: String },
@@ -187,6 +187,7 @@ const logic = {
             try{
                 user = await User.findById(userId)
             }catch(err){
+                
                 const notFound = 'CastError'
                 if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
                 throw Error(err.message)
@@ -208,12 +209,30 @@ const logic = {
         ])
 
         return (async () => {
-            const user = await User.findById(userId).lean()
+            let job
+            let user
+            try{
+                user = await User.findById(userId).lean()
+            }catch(err){
+                
+                const notFound = 'CastError'
+                if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
+                throw Error(err.message)
+            }
+
+            // const user = await User.findById(userId).lean()
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
-
-            const job = await Job.findById(jobId)
-                .lean()
+               
+            
+                try{
+                    job = await Job.findById(jobId).lean()
+                }catch(err){
+                
+                    const notFound = 'CastError'
+                    if(err.name === notFound) throw new NotFoundError(`job with id ${jobId} not found`)
+                    throw Error(err.message)
+                }
             
                 job.id = job._id.toString()
 
@@ -239,9 +258,21 @@ const logic = {
         validate([
             { key: 'id', value: id, type: String }
         ])
-
+    
         return (async () => {
-            const user = await User.findById(id).lean()
+        
+            let user
+            try{
+                
+                user = await User.findById(id).lean()
+            }catch(err){
+                
+                const notFound = 'CastError'
+                if(err.name === notFound) throw new NotFoundError(`user with id ${id} not found`)
+                throw Error(err.message)
+            }
+
+            // const user = await User.findById(id).lean()
 
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
@@ -299,12 +330,24 @@ const logic = {
         ])
 
         return (async () => {
-            const user = await User.findById(creatorId)
+            
+            let user
+            try{
 
-            if (!user) throw new NotFoundError(`user with id ${creatorId} not found`)
+            user = await User.findById(creatorId)
+        }catch(err){
+        
+            const notFound = 'CastError'
+            if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
+            throw Error(err.message)
+        }
 
+      if (!user) throw new NotFoundError(`user with id ${creatorId} not found`)
+            
             const job = await Job.findById(jobId)
 
+            if (!job) throw new NotFoundError(`job with id ${jobId} not found`)
+           
             const solicitors = await Promise.all(job.requestedBy.map(async solicitorId => await User.findById(solicitorId)))
 
             return solicitors.map(({ id, username }) => ({ id, username }))
@@ -312,20 +355,28 @@ const logic = {
     },
 
     //removes a job
-    removeJob(id, postitId) {
+    removeJob(id, jobId) {
+        
         validate([
             { key: 'id', value: id, type: String },
-            { key: 'postitId', value: postitId, type: String }
+            { key: 'jobId', value: jobId, type: String }
         ])
 
         return (async () => {
-            const user = await User.findById(id)
+            let user
+            try{
 
+            user = await User.findById(id)
+        }catch(err){
+            const notFound = 'CastError'
+            if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
+            throw Error(err.message)
+        }
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
-            const job = await Job.findOne({ user: user._id, _id: postitId })
+            const job = await Job.findOne({ user: user._id, _id: jobId })
 
-            if (!job) throw new NotFoundError(`postit with id ${job} not found`)
+            if (!job) throw new NotFoundError(`job with id ${jobId} not found`)
 
             await job.remove()
         })()
@@ -356,7 +407,7 @@ const logic = {
         return (async () => {
             const user = await User.findById(userId)
 
-            if (!user) throw new NotFoundError(`user with id ${id} not found`)
+            if (!user) throw new NotFoundError(`user with id ${userId} not found`)
 
             const job = await Job.findOne({ user: userId, _id: jobId })
 
@@ -390,13 +441,14 @@ const logic = {
         ])
     
         return (async () => {
+            debugger
             const requester = await User.findById(requestId)
             
             if (!requester) throw new NotFoundError(`user with id ${requestId} not found`)
 
             const job = await Job.findById(jobId)
 
-            if (!job) throw new NotFoundError(`job with id ${requestId} not found`)
+            if (!job) throw new NotFoundError(`job with id ${jobId} not found`)
 
             if (requestId === job.user) throw new NotAllowedError('user cannot add himself as a collaborator')
 

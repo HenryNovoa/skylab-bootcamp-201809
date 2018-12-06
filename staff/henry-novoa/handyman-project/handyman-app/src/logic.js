@@ -1,6 +1,9 @@
+//Uncomment for tests
+global.sessionStorage = require('sessionstorage')
+
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
-    _token: sessionStorage.getItem('token') || null,
+     _token: sessionStorage.getItem('token') || null,
 
     url: 'NO-URL',
 
@@ -339,5 +342,5 @@ const logic = {
     }
 }
 
-// export default logic
+//export default logic
 module.exports = logic

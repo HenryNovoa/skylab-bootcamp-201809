@@ -1,7 +1,7 @@
 import React from 'react'
 
 function Rating(props) {
-    return <div className='rating'>
+    return <div className='box'>
 
         <h5>Rating</h5>
         <p className='rating__number'>{props.ratingNumber}</p>

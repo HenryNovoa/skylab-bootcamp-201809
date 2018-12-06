@@ -20,7 +20,8 @@ class SearchBar extends Component {
     render() {
 
         return <div className='searchbar'>
-            <h3>Search for jobs</h3>
+            <div className='searchbar-container has-text-centered'>
+            <h3 className='has-text-white  has-text-weight-bold'>Search for jobs</h3>
             <select className='searchbar__select' onChange={this.handleCityChange} defaultValue="none">
                 <option disabled={true} value="none">Choose a city</option>
                 <option value='all'>All</option>
@@ -31,6 +32,7 @@ class SearchBar extends Component {
                 <option value='bilbao'>Bilbao</option>
             </select>
             <button onClick={this.handleSubmit}>Search</button>
+            </div>
 
 
         </div>

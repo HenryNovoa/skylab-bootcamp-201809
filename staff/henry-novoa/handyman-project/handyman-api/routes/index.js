@@ -7,10 +7,9 @@ const jwtVerifier = require('./jwt-verifier')
 const routeHandler = require('./route-handler')
 const Busboy = require('busboy')
 const fs = require('fs')
-const jsonBodyParser = bodyParser.json()
 const router = express.Router()
 const { env: { JWT_SECRET } } = process
-
+const jsonBodyParser = bodyParser.json({ limit: '100mb' })
 //Register User
 router.post('/users', jsonBodyParser, (req, res) => {
     routeHandler(() => {

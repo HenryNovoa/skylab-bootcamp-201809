@@ -43,4 +43,9 @@ option {
   background-color: black;
   color: white;
 }
+
+.searchbar-container{
+  padding: 20px;
+  margin: 20px;
+}
 /*# sourceMappingURL=style.css.map */
