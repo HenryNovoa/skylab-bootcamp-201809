@@ -47,7 +47,7 @@ class NavBar extends Component {
         <div className="navbar-menu">
           <div className="navbar-start">
             <div className="navbar-item">
-              <small>HandyMan App</small>
+              <small onClick={this.props.onHomeClick}>HandyMan App</small>
             </div>
           </div>
 

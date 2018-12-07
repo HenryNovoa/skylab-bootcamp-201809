@@ -4,6 +4,7 @@ import NavBar from '../NavBar/NavBar'
 import logic from '../../logic'
 import Rating from '../Rating/Rating'
 import { throws } from 'assert';
+import Footer from '../Footer/Footer'
 
 class Profile extends Component {
     state = { userId: logic.sessionId, jobsAssigned: [], jobsRequested: [], jobsPosted: [], jobsDone: [], user: '', averageRating: '',created:true,completed:false,requested:false,assigned:false }
@@ -105,9 +106,9 @@ class Profile extends Component {
     render() {
 
         const { user,created,completed,requested,assigned } = this.state
-        return <div className='container'>
+        return <div className=''>
          <NavBar onHomeClick={this.handleOnHomeClick} onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
-        <div className='container columns'>
+        <div className='box columns'>
         
         <div className= 'column'>
         <h2 className='title'>Name:{user.name}</h2>
@@ -120,7 +121,7 @@ class Profile extends Component {
         </div>
         </div>
          <div class="tabs is-toggle is-fullwidth">
-        <ul>
+        <ul className='container'>
           <li className="" onClick={this.handleShowCreatedJobs}>
             <a>
               <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
@@ -148,10 +149,10 @@ class Profile extends Component {
         </ul>
       </div>
 
-       <div className="container has-gutter-top-bottom ">
+       <div className="has-background-primary has-gutter-top-bottom ">
               
                 {/* Iterates through data (jobs) */}
-                <h1 className="title is-2">Jobs</h1>
+                <h1 className="title box has-background-info has-text-centered is-2">Jobs</h1>
                 <div className="columns is-multiline">
                 
                     {this.state.jobs && created && this.state.jobsPosted.map(job => {
@@ -193,58 +194,9 @@ class Profile extends Component {
                
             </div>
         
+            <Footer />
          </div>
         
-        
-        
-        // <div className="div-home">
-        //     <NavBar onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
-        //     <section className="profile">
-        //         <div className="profile__center">
-        //             {/* <div className="profile__img">
-        //                 <img className="profile__img-small" src={'../../public/images/mario.jpg'}></img>
-        //             </div> */}
-        //             <div className="profile__info">
-        //                 <h4>Username</h4>
-        //                 <p>{user && user.username}</p>
-        //                 <h4>Name</h4>
-        //                 <p>{user && user.name}</p>
-        //                 <div className="info__stadistics">
-        //                     {/* <p className="stadistics">Posts {this.state.posts ? this.state.posts.length : '0'}</p>
-        //                     <p className="stadistics">Follows {this.state.follows ? this.state.follows.length : '0'}</p>
-        //                     <p className="stadistics">Followers {this.state.followers ? this.state.followers.length : '0'}</p> */}
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     </section>
-        //     <div className="gallery">
-        //         <i onClick={this.handleGallery} className="fas fa-th icon icon__profile">Posted jobs</i>
-        //     </div>
-        //     <section className="gallery">
-        //         {this.state.jobs && this.state.jobsPosted.map(job => <PreJob onViewJobClick={this.handleOnViewJobClick} photo={job.photo} key={job.id} id={job.id} userId={job.user} location={job.location} title={job.title} budget={job.budget} />)}
-        //     </section>
-        //     <div className="gallery">
-        //         <i onClick={this.handleGallery} className="fas fa-th icon icon__profile">Jobs completed</i>
-        //     </div>
-        //     <section className="gallery">
-        //         {this.state.jobs && this.state.jobsDone.map(job =>
-        //             <div><PreJob onViewJobClick={this.handleOnViewJobClick} key={job.id} id={job.id} userId={job.user} photo={job.photo} location={job.location} title={job.title} budget={job.budget} />
-        //                 <Rating ratingText={job.ratingText} ratingNumber={job.rating} /></div>
-        //         )}
-        //     </section>
-        //     <div className="gallery">
-        //         <i onClick={this.handleGallery} className="fas fa-th icon icon__profile">Jobs assigned</i>
-        //     </div>
-        //     <section className="gallery">
-        //         {this.state.jobs && this.state.jobsAssigned.map(job => <PreJob onViewJobClick={this.handleOnViewJobClick} photo={job.photo} key={job.id} id={job.id} userId={job.user} location={job.location} title={job.title} budget={job.budget} />)}
-        //     </section>
-        //     <div className="gallery">
-        //         <i onClick={this.handleGallery} className="fas fa-th icon icon__profile">Jobs requested</i>
-        //     </div>
-        //     <section className="gallery">
-        //         {this.state.jobs && this.state.jobsRequested.map(job => <PreJob onViewJobClick={this.handleOnViewJobClick} photo={job.photo} key={job.id} id={job.id} userId={job.user} location={job.location} title={job.title} budget={job.budget} />)}
-        //     </section>
-        // </div>
     }
 }
 

@@ -1,11 +1,13 @@
 //Uncomment for tests
-global.sessionStorage = require('sessionstorage')
+//global.sessionStorage = require('sessionstorage')
 
 const logic = {
     _userId: sessionStorage.getItem('userId') || null,
      _token: sessionStorage.getItem('token') || null,
 
     url: 'NO-URL',
+
+
 
     registerUser(name, surname, username, password) {
         if (typeof name !== 'string') throw TypeError(`${name} is not a string`)
@@ -94,7 +96,7 @@ const logic = {
         if (!contact.trim()) throw Error('contact is empty or blank')
         if (!location.trim()) throw Error('location is empty or blank')
         if (!description.trim()) throw Error('description is empty or blank')
-        debugger
+        
         return fetch(`${this.url}/users/${this._userId}/jobs`, {
             method: 'POST',
             headers: {
@@ -105,6 +107,7 @@ const logic = {
         })
             .then(res => res.json())
             .then(res => {
+                
                 if (res.error) throw Error(res.error)
             })
     },
@@ -124,8 +127,9 @@ const logic = {
 
                 return res.data
             })
-            .catch(err => console.log(err.message))
-    },
+
+
+                },
 
     getJob(userId, jobId) {
 
@@ -148,7 +152,7 @@ const logic = {
 
                 return res.data
             })
-            .catch(err => console.log(err.message))
+           
     },
 
     requestJob(userId, jobId) {
@@ -192,7 +196,7 @@ const logic = {
 
                 return res.data
             })
-            .catch(err => console.log(err.message))
+           
     },
 
     assignJob(toAssignId, jobId) {
@@ -311,7 +315,7 @@ const logic = {
 
                 return res.data
             })
-            .catch(err => console.log(err.message))
+           
 
 
     },

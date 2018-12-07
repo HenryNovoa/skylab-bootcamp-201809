@@ -3,6 +3,7 @@ import PreJob from '../PreJob/PreJob'
 import NavBar from '../NavBar/NavBar'
 import logic from '../../logic'
 import Rating from '../Rating/Rating'
+import Footer from '../Footer/Footer'
 
 
 
@@ -87,9 +88,9 @@ class OtherProfile extends Component {
         const { userId,user,created,completed } = this.state
         
         
-        return <div className='container'>
+        return <div className=''>
          <NavBar onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
-        <div className='container columns'>
+        <div className='box columns'>
     
         
         <div className='column'>
@@ -97,7 +98,7 @@ class OtherProfile extends Component {
         </div>
         </div>
          <div class="tabs is-toggle is-fullwidth">
-        <ul>
+        <ul className='container'>
           <li className="" onClick={this.handleShowCreatedJobs}>
             <a>
               <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
@@ -114,10 +115,10 @@ class OtherProfile extends Component {
         </ul>
       </div>
 
-       <div className="container has-gutter-top-bottom ">
+       <div className="has-background-primary has-gutter-top-bottom ">
               
                 {/* Iterates through data (jobs) */}
-                <h1 className="title is-2">Jobs</h1>
+                <h1 className="title has-background-info has-text-centered is-2">Jobs</h1>
                 <div className="columns is-multiline">
                 
                     {this.state.jobs && created && this.state.jobsPosted.map(job => {
@@ -138,7 +139,7 @@ class OtherProfile extends Component {
                 }
 
             </div>
-           
+           <Footer />
                
             </div>
         

@@ -4,6 +4,8 @@ import { throws } from 'assert';
 import Error from '../Error/Error'
 import CollaboratorModal from '../CollaboratorModal/CollaboratorModal'
 import NavBar from '../NavBar/NavBar'
+import Footer from '../Footer/Footer'
+
 
 
 
@@ -59,10 +61,15 @@ class Job extends Component {
         this.setState({ toAssign })
     }
 
-    handleAssignJob = () => this.props.onAssignJob(this.state.toAssign, this.props.jobId)
-        .then(() => this.handleMount())
-
-
+    handleAssignJob = () =>{ 
+        try{
+        this.props.onAssignJob(this.state.toAssign, this.props.jobId).then(() => this.handleMount())
+        }catch(err){
+            this.setState({error:'Must Assign Valid User'})
+        }
+    
+    }
+      
     handleRemoveClick = () =>
         this.props.onRemoveJob(this.props.jobId)
 
@@ -131,17 +138,18 @@ class Job extends Component {
 
 
         return <div className='job'>
-            <NavBar onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
-            {error && <Error message={error} />}
-            <div className="columns is-multiline is-centered has-text-centered">
+            <NavBar onHomeClick={this.handleOnHomeClick} onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
+            <div className='has-background-primary'>
+            <div className="columns has-background-primary is-multiline is-centered has-text-centered">
                 <div className="column is-6 has-shadow card">
                     <header className="card-header">
-                        <p className="card-header-title">
+                        <p className="card-header-title box title is-2">
                             {job.title}
                         </p>
+                            {(myJob && job.status !== jobIsDone) ? <button className='button is-danger is-small' onClick={this.handleRemoveClick}>Delete Job</button> : null}
                         {/* <a href="#" className="card-header-icon" aria-label="more options">
                             <span className="icon">
-                                <i className="fas fa-angle-down" aria-hidden="true"></i>
+                            <i className="fas fa-angle-down" aria-hidden="true"></i>
                             </span>
                         </a> */}
                     </header>
@@ -150,6 +158,7 @@ class Job extends Component {
                         <figure className="image is-4by3">
                             <img src={photo ? photo : defaultPicture} />
                         </figure>
+                        {error && <Error message={error} />}
                     </div>
                     <div className="card-content">
                         <div className="media">
@@ -159,16 +168,20 @@ class Job extends Component {
             </figure> 
           </div> */}
                             <div className="media-content">
+                                
+                                <div className='box'>
                                 <p className="title is-4">Budget:{job.budget}</p>
                                 <p className="subtitle is-6">Location:{job.location}</p>
                                 <p className="subtitle is-6">Status:{job.status}</p>
                                  {myJob ? <p className='subtitle is-6'>Assigned to: {job && this.state.assignedTo.username}</p> : null}
-                                <p className="title is-5">{job.description}</p>
+                                 </div>
+                                 <label className='label'>Description</label>
+                                <p className="box is-2">{job.description}</p>
                                 
                                
                             </div>
                             <button className='button is-dark' onClick={this.handleBackClick}>Home</button>
-                            {(myJob && job.status !== jobIsDone) ? <button className='button is-danger is-small' onClick={this.handleRemoveClick}>Delete Job</button> : null}
+                          
                         </div>
                        
                         {myJob ? <select defaultValue="none" onChange={this.handleRequestChange}>
@@ -181,65 +194,19 @@ class Job extends Component {
                         
                     </div>
                     <footer className="card-footer">
-                     {(myJob && job.status === jobIsDoing) ? <button className='button card-footer-item is-success' onClick={this.handleFinishedClick}>Mark as finished</button> : null}
+                     {(myJob && job.status === jobIsDoing) ? <button className='button card-footer-item is-warning' onClick={this.handleFinishedClick}>Mark as finished</button> : null}
                      
-                     {(myJob && !done) ? <div className='card-footer-item'><button className='button is-info' onClick={this.handleAssignJob}>Assign Job</button><button className='button is-primary' onClick={this.handleProfileView}>View Profile</button></div> : null}   
+                     {(myJob && !done) ? <button className='button has-text-centered card-footer-item is-success' onClick={this.handleAssignJob}>Assign Job</button> : null}  
+                     {(myJob) ? <button className='card-footer-item button is-info' onClick={this.handleProfileView}>View Profile</button> :null} 
+
                         {/* <a href="#" class="card-footer-item">Delete</a> */}
                     </footer>
                 </div>
             </div>
-
-
+          <Footer />
+          </div>
 
           <CollaboratorModal modal={this.state.modal} onCloseModal={this.handleOnCloseModal} onRateJob={this.handleRateJob} />
-
-
-
-
-
-            {/* <div>
-
-
-                <Card body outline color="secondary">
-                    <CardBody>
-                        <CardHeader tag="h3">{job && job.title}</CardHeader>
-                        <CardSubtitle>{job && job.budget}</CardSubtitle>
-                        <CardSubtitle>{job && job.location}</CardSubtitle>
-                    </CardBody>
-                    <img width="100%" src={photo ? photo : defaultPicture} alt="Card image cap" />
-                    <CardBody>
-                        <CardText>{job && job.description}</CardText>
-
-                        <CardSubtitle>Status: {job && job.status}</CardSubtitle>
-
-                        <CardSubtitle>Rating {job && job.rating}</CardSubtitle>
-
-                        {(myJob && job.status === jobIsDoing) ? <Button onClick={this.handleFinishedClick}>Mark as finished</Button> : null}
-                        
-                        <Button onClick={this.handleBackClick}>Home</Button>
-                        
-                        {(myJob && job.status !== jobIsDone) ? <Button onClick={this.handleRemoveClick}>Delete Job</Button> : null}
-                       
-                    
-
-                        <CardFooter><div className='job__footer'> {myJob ? <select defaultValue="none" onChange={this.handleRequestChange}>
-                           
-                            <option disabled={true} value="none">Users who requested job</option>
-
-                            {this.state.requestedBy.map(user => <option value={user.id}>{user.username}</option>)}
-                        </select> : (!done && !requested) ? <button onClick={this.handleRequestJob}>Request Job</button> : (!assigned) ? <p>You have requested to do this job</p> : <p>You have been assigned this job</p>}
-                            
-                            {myJob ? <p>Assigned to: {job && this.state.assignedTo.username}</p> : null}
-                            
-                            {(done && assigned) ? <p>You have completed this job</p> : null}
-                            
-                            {(myJob && !done) ? <div><Button onClick={this.handleAssignJob}>Assign Job</Button><Button onClick={this.handleProfileView}>View Profile</Button></div> : null}
-                        </div>
-                        </CardFooter>
-                    </CardBody>
-                </Card>
-                
-            </div> */}
         </div>
     }
 }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Logo from './images/handyman.png'
-
+import Error from '../Error/Error'
 class LoginForm extends Component {
-    state = { username: '', password: '' }
+    state = { username: '', password: '',error:'' }
 
     handleUsernameChange = event => {
         const username = event.target.value
@@ -34,6 +34,7 @@ class LoginForm extends Component {
     render() {
 
         return <form className="box" onSubmit={this.handleSubmit}>
+        <Error message={this.props.error}/>
             <div className="field has-text-centered">
                 <img src={Logo} width="167" />
             </div>

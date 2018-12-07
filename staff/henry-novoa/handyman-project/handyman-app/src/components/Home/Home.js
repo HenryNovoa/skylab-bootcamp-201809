@@ -98,28 +98,27 @@ class Home extends Component {
 
         const isDone = 'DONE'
 
-        return<div className='container'> 
-        <div className="home has-background-white-ter">
+        return <div>
+        <div className="home has-background-primary">
             <NavBar onHomeClick={this.handleHomeClick} onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
             <SearchBar onCitySearch={this.handleOnCitySearch} />
-
-
             <div className="container has-gutter-top-bottom ">
-                <h1 className="title is-2">Available Jobs</h1>
+                <h1 className="box has-text-centered title is-2">Available Jobs</h1>
                 {/* Iterates through data (jobs) */}
                 <div className="columns is-multiline">
                     {(this.state.jobs.length && this.state.availableJobs) ? this.state.jobs.map(job => {
                         if(job.status !== isDone) return <div className="column is-4 has-shadow">
                             <PreJob onViewJobClick={this.handleOnViewJobClick} photo={job.photo} key={job.id} id={job.id} userId={job.user} location={job.location} title={job.title} budget={job.budget} />
                         </div>
-                    }) : <h2>Oops, there seems to be no results for your query</h2>}
+                    }) : <h2 className='box container'>Oops, there seems to be no results for your query</h2>}
 
                 </div>
-                <Footer />
+               
             </div>
-
+           
 
         </div>
+            <Footer />
         </div>
     }
 }

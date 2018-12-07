@@ -19,9 +19,17 @@ logic.url=process.env.REACT_APP_API_URL
 class App extends Component {
     state = { job: null, error: null, jobView: null, userId: 'hello',otherProfile:null,otherJobs:null }
 
-    handleRegisterClick = () => this.props.history.push('/register')
+    handleRegisterClick = () =>{
+        this.setState({error:null})
+        this.props.history.push('/register')
+    } 
+        
 
-    handleLoginClick = () => this.props.history.push('/login')
+    handleLoginClick = () =>{
+        this.setState({error:null})
+        this.props.history.push('/login')
+    }
+        
 
     handleRegister = (name, surname, username, password) => {
         try {
@@ -131,7 +139,7 @@ class App extends Component {
     }
 
     handleOnProfileView = (userId) => {
-        debugger
+       
         try {
             logic.retrieveUser(userId)
                 .then(user =>{
@@ -163,21 +171,21 @@ class App extends Component {
         return <div>
             <Route exact path='/' render={() => !logic.loggedIn ? <Landing onRegisterClick={this.handleRegisterClick} onLoginClick={this.handleLoginClick} /> : <Redirect to='/home' />} />
 
-            <Route path='/register' render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to='/home' />} />
+            <Route path='/register' render={() => !logic.loggedIn ? <Register error={this.state.error} onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to='/home' />} />
 
-            <Route path='/login' render={() => !logic.loggedIn ? <Login onLoginClick={this.handleLogin} onGoBackClick={this.handleGoBack} /> : <Redirect to='/home' />} />
+            <Route path='/login' render={() => !logic.loggedIn ? <Login error={this.state.error} onLoginClick={this.handleLogin} onGoBackClick={this.handleGoBack} /> : <Redirect to='/home' />} />
 
             <Route path='/create' render={() => logic.loggedIn ? <CreateJob onCreateJobClick={this.handleCreateJobClick}  onLogoutClick={this.handleLogoutClick} onProfileClick={this.handleProfileClick} onGoBackClick={this.handleOnHomeClick} onHomeClick={this.handleOnHomeClick} CreateJob={this.handleOnCreateJob} /> : <Redirect to='/home' />} />
 
             <Route path='/home' render={() => logic.loggedIn ? <Home onHomeClick={this.handleOnHomeClick} onLogoutClick={this.handleLogoutClick} onProfileClick={this.handleProfileClick} onViewJobClick={this.handleOnViewJobClick} onCreateJobClick={this.handleCreateJobClick} /> : <Redirect to='/' />} />
 
-            <Route path='/users/:userId/job/:jobId/view' render={(props) => logic.loggedIn ? <Job onCreateJobClick={this.handleCreateJobClick}  onLogoutClick={this.handleLogoutClick} onProfileClick={this.handleProfileClick} key={props.match.params.jobId} onBackClick={this.handleOnHomeClick} jobId={props.match.params.jobId} userId={props.match.params.userId} onInitialize={this.state.jobView} onRequestJob={this.handleOnRequestJob} onAssignJob={this.handleOnAssignJob} onRemoveJob={this.handleRemoveJob} onRateJob={this.handleRateJob} onProfileView={this.handleOnProfileView} /> : <Redirect to='home' />} />
+            <Route path='/users/:userId/job/:jobId/view' render={(props) => logic.loggedIn ? <Job onHomeClick={this.handleOnHomeClick} onCreateJobClick={this.handleCreateJobClick}  onLogoutClick={this.handleLogoutClick} onProfileClick={this.handleProfileClick} key={props.match.params.jobId} onBackClick={this.handleOnHomeClick} jobId={props.match.params.jobId} userId={props.match.params.userId} onInitialize={this.state.jobView} onRequestJob={this.handleOnRequestJob} onAssignJob={this.handleOnAssignJob} onRemoveJob={this.handleRemoveJob} onRateJob={this.handleRateJob} onProfileView={this.handleOnProfileView} /> : <Redirect to='home' />} />
 
             <Route path='/profile' render={() => logic.loggedIn ? <Profile key={logic.sessionId} onViewJobClick={this.handleOnViewJobClick} onHomeClick={this.handleOnHomeClick} onCreateJobClick={this.handleCreateJobClick}  onLogoutClick={this.handleLogoutClick} onProfileClick={this.handleProfileClick}  /> : <Redirect to='home' />} />
 
             <Route exact path='/users/:userId' render={(props) => logic.loggedIn ? <OtherProfile onCreateJobClick={this.handleCreateJobClick}  onLogoutClick={this.handleLogoutClick} onProfileClick={this.handleProfileClick} onInitializeUser={this.state.otherProfile} onInitializeJobs={this.state.otherJobs} key={props.match.params.userId} userId={props.match.params.userId} onLogoutClick={this.handleLogoutClick} onViewJobClick={this.handleOnViewJobClick} onCreateJobClick={this.handleCreateJobClick} /> : <Redirect to='/' />} />
 
-            {error && <Error message={error} />}
+            {/* {error && <Error message={error} />} */}
 
 
         </div>

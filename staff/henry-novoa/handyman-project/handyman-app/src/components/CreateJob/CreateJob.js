@@ -6,7 +6,7 @@ import Footer from '../Footer/Footer'
 
 
 class CreateJob extends Component {
-    state = { pictures: [], title: '', budget: '', description: '', location: '', tags: [], contact: '', loading: false, photo: '' }
+    state = { pictures: [], title: '', budget: '', description: '', location: '', tags: [], contact: '', loading: false, photo: '',error:'' }
 
 
 
@@ -138,99 +138,94 @@ class CreateJob extends Component {
     render() {
 
         return <div >
-            <NavBar onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
+            <NavBar onHomeClick={this.handleOnHomeClick} onLogout={this.handleLogoutClick} onCreateJobClick={this.handleCreateJobClick} onProfileClick={this.handleProfileClick} />
+            <div className='has-background-primary'>
+                <div className='columns is-centered'>
 
-            <div className='has-background-primary columns is-centered'>
-
-                <form className="box is-8-desktop" onSubmit={this.handleCreateJob}>
-                    <div className="field has-text-centered">
-                        <p className='has-text-centered has-text-dark has-text-weight-bold'>Create a new job</p>
-                    </div>
-                    <div className="field">
-                        <label className="label">Title</label>
-                        <div className="control has-icons-left">
-                            <input className="input" type="text" placeholder="e.g. manuelbarzi" onChange={this.handleTitleChange} required />
-                            <span className="icon is-small is-left">
-                                <i class="far fa-file"></i>
-                            </span>
+                    <form className="box is-8-desktop" onSubmit={this.handleCreateJob}>
+                        <div className="field has-text-centered">
+                            <p className='has-text-centered has-text-dark has-text-weight-bold'>Create a new job</p>
                         </div>
-                    </div>
-                    <div className="field">
-                        <label className="label">Contact</label>
-                        <div className="control has-icons-left">
-                            <input className="input" type="text" placeholder="e.g. manuelbarzi" onChange={this.handleContactChange} required />
-                            <span className="icon is-small is-left">
-                                <i className="fas fa-user"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div className="field">
-                        <label className="label">Budget</label>
-                        <div className="control has-icons-left">
-                            <input className="input" type="text" placeholder="50€" onChange={this.handleBudgetChange} required />
-                            <span className="icon is-small is-left">
-                                <i class="fas fa-money-bill-alt"></i>
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Location</label>
-                        <div class="control">
-                            <div class="select">
-                                <select onChange={this.handleLocationChange}>
-                                    <option value="none">Choose a city</option>
-                                    <option value='madrid'>Madrid</option>
-                                    <option value='barcelona'>Barcelona</option>
-                                    <option value='sevilla'>Sevilla</option>
-                                    <option value='bilbao'>Bilbao</option>
-                                    <option value='valencia'>Valencia</option>
-                                </select>
+                        <div className="field">
+                            <label className="label">Title</label>
+                            <div className="control has-icons-left">
+                                <input className="input" type="text" placeholder="e.g. manuelbarzi" onChange={this.handleTitleChange} required />
+                                <span className="icon is-small is-left">
+                                    <i class="far fa-file"></i>
+                                </span>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Description</label>
-                        <div class="control has-icons-left">
-                            <textarea class="textarea" onChange={this.handleDescriptionChange} ></textarea>
-                            <span className="icon is-small is-left">
-                            <i class="fas fa-pen"></i>
-                            </span>
+                        <div className="field">
+                            <label className="label">Contact</label>
+                            <div className="control has-icons-left">
+                                <input className="input" type="text" placeholder="e.g. manuelbarzi" onChange={this.handleContactChange} required />
+                                <span className="icon is-small is-left">
+                                    <i className="fas fa-user"></i>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="field">
-                        <label class="label">Picture</label>
-                        <FileBase64 className="input" multiple={false} onDone={this.getFiles} />
 
-                    </div>
-                    <div class="field has-text-centered">
-                    <p>Picture Preview</p>
-                    <figure className="image is-4by3">
-                        <img src={this.state.photo} />
-                    </figure>
-                    </div>
-                    {/* <div className="field">
-                <label className="checkbox">
-                    <input type="checkbox" required />
-                    Remember me
-                                                             </label>
-            </div> */}
-                    <div className="field">
-                        <button className="button is-success">
-                            Create Job
+
+                        <div className="field">
+                            <label className="label">Budget</label>
+                            <div className="control has-icons-left">                                
+                                <input className="input" type="text" placeholder="50€" onChange={this.handleBudgetChange} required />
+                                
+                                <span className="icon is-small is-left">
+                                    <i class="fas fa-money-bill-alt"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Location</label>
+                            <div class="control">
+                                <div class="select">
+                                    <select onChange={this.handleLocationChange}>
+                                        <option value="none">Choose a city</option>
+                                        <option value='madrid'>Madrid</option>
+                                        <option value='barcelona'>Barcelona</option>
+                                        <option value='sevilla'>Sevilla</option>
+                                        <option value='bilbao'>Bilbao</option>
+                                        <option value='valencia'>Valencia</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Description</label>
+                            <div class="control has-icons-left">
+                                <textarea class="textarea" placeholder='Write down the specifics' onChange={this.handleDescriptionChange} ></textarea>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label class="label">Picture</label>
+                            <FileBase64 className="input" multiple={false} onDone={this.getFiles} />
+
+                        </div>
+                        <div class="field has-text-centered">
+                            <p>Picture Preview</p>
+                            <figure className="image is-4by3">
+                                <img src={this.state.photo} />
+                            </figure>
+                        </div>
+                        <div className="field">
+                            <button className="button is-success">
+                                Create Job
                </button>
 
-                    </div>
+                        </div>
 
-                    <button onClick={this.handleOnHomeClick} className="button is-dark is-small">
-                        Back
+                        <button onClick={this.handleOnHomeClick} className="button is-dark is-small">
+                            Back
             </button>
-                </form>
+                    </form>
+                </div>
+                <Footer />
             </div>
-            <Footer />
         </div>
     }
 

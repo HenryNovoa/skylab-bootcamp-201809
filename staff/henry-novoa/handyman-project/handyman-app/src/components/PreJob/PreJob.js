@@ -28,7 +28,7 @@ import React, { Component } from 'react'
             <p className="subtitle is-6">{props.location}</p>
           </div>
         </div>
-          <button className='button is-primary' onClick={()=>props.onViewJobClick(props.userId,props.id)}>View Job</button>
+          <button className='button is-info' onClick={()=>props.onViewJobClick(props.userId,props.id)}>View Job</button>
         </div>
       
     </div>
