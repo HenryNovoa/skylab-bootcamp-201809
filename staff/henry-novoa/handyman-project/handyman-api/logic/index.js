@@ -23,6 +23,10 @@ const logic = {
     /**
      * 
      * @param {string} base64Image 
+     * 
+     *
+     * @returns {string} url
+     * 
      */
     _saveImage(base64Image) {
         return Promise.resolve().then(() => {
@@ -40,6 +44,18 @@ const logic = {
 
     //User
 
+     /**
+     * 
+     * @param {string} name Given name of user
+     * @param {string} surname Given surname of user
+     * @param {string} username Given username of user
+     * @param {string} password Given password of user
+     * 
+     * @throws {Error in case of empty parameters}
+     * @throws {Error in case API detects repeated username} 
+     * 
+     * saves user in designated database
+     */
     registerUser(name, surname, username, password) {
         validate([{ key: 'name', value: name, type: String }, { key: 'surname', value: surname, type: String }, { key: 'username', value: username, type: String }, { key: 'password', value: password, type: String }])
 
@@ -53,6 +69,17 @@ const logic = {
             await user.save()
         })()
     },
+ /**
+     * 
+     * @param {string} username Given username of user
+     * @param {string} password Given password of user
+     * 
+     * @throws {Error in case of empty parameters}
+     * @throws {Error in case API detects wrong password}
+     * 
+     * @returns {String} user ID
+     */
+
 
     authenticateUser(username, password) {
         validate([{ key: 'username', value: username, type: String }, { key: 'password', value: password, type: String }])
