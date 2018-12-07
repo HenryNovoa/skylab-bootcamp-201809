@@ -2,11 +2,6 @@ const { mongoose, models: { User, Job, Comment } } = require('handyman-data')
 const logic = require('.')
 const { AuthError, AlreadyExistsError, ValueError, NotFoundError } = require('../errors')
 const chunk = require('./chunk-test')
-const fs = require('fs-extra')
-const path = require('path')
-const hasha = require('hasha')
-const streamToArray = require('stream-to-array')
-const text2png = require('text2png')
 
 const cloudinary = require('cloudinary')
 const { expect } = require('chai')
@@ -564,7 +559,7 @@ describe('logic', () => {
 
             // TODO other test cases
         })
-        false && describe('add photo (to already existing job)', () => {
+        describe('add photo (to already existing job)', () => {
             let user
 
             beforeEach(async () => {
@@ -613,7 +608,7 @@ describe('logic', () => {
             })
 
         })
-        false && describe('upload photo', () => {
+        describe('upload photo', () => {
             let user
 
             beforeEach(async () => {
@@ -1376,38 +1371,7 @@ describe('logic', () => {
 
 
 
-            false && describe('when user has postit assigned', () => {
-                let user2, postit3
-
-                beforeEach(async () => {
-                    user2 = new User({ name: 'Pepe', surname: 'Grillo', username: 'pg', password: '123' })
-
-                    postit3 = new Postit({ text: 'hello text 3', user: user2.id, assignedTo: user.id })
-
-                    await user2.save()
-                    await postit3.save()
-                })
-
-                false & it('should succeed on correct data', async () => {
-                    const postits = await logic.listPostits(user.id)
-
-                    expect(postits.length).to.equal(3)
-
-                    postits.forEach(_postit => {
-                        if (_postit.id === postit.id) {
-                            expect(_postit.text).to.equal(postit.text)
-                        } else if (_postit.id === postit2.id) {
-                            expect(_postit.text).to.equal(postit2.text)
-                        } else if (_postit.id === postit3.id) {
-                            expect(_postit.text).to.equal(postit3.text)
-
-                            expect(_postit.assignedTo).to.equal(user.id)
-                        } else {
-                            throw Error('postit does not match any of the expected ones')
-                        }
-                    })
-                })
-            })
+         
         })
 
         describe('remove', () => {

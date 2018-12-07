@@ -1,9 +1,7 @@
 
 const { AlreadyExistsError, AuthError, NotAllowedError, NotFoundError } = require('../errors')
 const validate = require('../utils/validate')
-const fs = require('fs')
-const path = require('path')
-const { models: { User ,Job, Comment } } = require('handyman-data')
+const { models: { User ,Job } } = require('handyman-data')
 
 const cloudinary = require('cloudinary')
 
@@ -339,7 +337,7 @@ const logic = {
         
             const notFound = 'CastError'
             if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
-            throw Error(err.message)
+            
         }
 
       if (!user) throw new NotFoundError(`user with id ${creatorId} not found`)
@@ -370,7 +368,7 @@ const logic = {
         }catch(err){
             const notFound = 'CastError'
             if(err.name === notFound) throw new NotFoundError(`user with id ${userId} not found`)
-            throw Error(err.message)
+        
         }
             if (!user) throw new NotFoundError(`user with id ${id} not found`)
 
@@ -441,7 +439,7 @@ const logic = {
         ])
     
         return (async () => {
-            debugger
+            
             const requester = await User.findById(requestId)
             
             if (!requester) throw new NotFoundError(`user with id ${requestId} not found`)
