@@ -18,7 +18,7 @@ After the user assigns another user to do said job, he will be rated on the resu
 ## Technical Description
 ---
 
-The application is a web application that is meant to run within a browser environment. It consists of a ReactJS frontend with Bulma and Bootstrap that connects to two APIs.
+The application is a web application that is meant to run within a browser environment. It consists of a ReactJS frontend with Bulma that connects to two APIs.
 
  - The first API is RESTful and handles both the user data and the jobs they publish.
  - User data is persistent across page reloads, as local data is stored in the user's SessionStorage.
