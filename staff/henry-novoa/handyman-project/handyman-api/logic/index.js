@@ -93,6 +93,18 @@ const logic = {
         })()
     },
 
+
+    /**
+     * 
+     * @param {string} username Given username of user
+     * @param {string} password Given password of user
+     * 
+     * @throws {Error in case of empty parameters}
+     * @throws {Error in case API detects wrong password}
+     * 
+     * @returns {String} user ID
+     */
+
     retrieveUser(id) {
         validate([{ key: 'id', value: id, type: String }])
 
@@ -119,6 +131,22 @@ const logic = {
             return user
         })()
     },
+
+    /**
+     * 
+     * @param {string} id Given username of user
+     * @param {string} name Given password of user
+     * @param {string} username Given username of user
+     * @param {string} surname Given password of user
+     * @param {string} newPassword Given username of user
+     * @param {string} password Given password of user
+     * 
+     * 
+     * @throws {Error in case of empty parameters}
+     * @throws {Error in case API detects wrong password}
+     * 
+     * @returns {String} user ID
+     */
 
     updateUser(id, name, surname, username, newPassword, password) {
         validate([
@@ -160,6 +188,18 @@ const logic = {
             }
         })()
     },
+      /**
+     * 
+     * @param {string} userId the user id
+     * @param {string} jobId job id
+     * @param {string} chunk base64image
+     * 
+     * 
+     * @throws {Error in case of empty parameters}
+     * @throws {Error in case API detects wrong password}
+     * 
+     * saves into database
+     */
     insertPhotoToJob(userId ,jobId, chunk) {
         
         validate([
@@ -190,6 +230,23 @@ const logic = {
 
     },
 
+       /**
+     * 
+     * @param {string} title title
+     * @param {string} userId user id
+     * @param {string} budget base64image
+     * @param {string} contact the user id
+     * @param {string} description job id
+     * @param {string} location base64image
+     * @param {string} tags job id
+     * @param {string} photo base64image
+     * 
+     * 
+     * @throws {Error in case of empty parameters}
+     * @throws {Error in case API detects wrong password}
+     * 
+     * saves into database
+     */
     createJob(details) {
 
         const { title,userId, budget, contact, description, location, tags, photo } = details
