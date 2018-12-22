@@ -1,29 +1,29 @@
-// module.exports = { Postit }
+// Data - Model (domain)
 
-class Post {
-    constructor(userId, url, description) {
+class Postit {
+    constructor(text) {
+        this.text = text
         this.id = Date.now()
-        this.userId =userId
-        this.url = url
-        this.description = description
-        this.comments = []
-        this.likes = []
     }
 }
 
-class Comment {
-    constructor(userId, content) {
+class User {
+    constructor(name, surname, username, password) {
+        this.name = name
+        this.surname = surname
+        this.username = username
+        this.password = password
         this.id = Date.now()
-        this.userId =userId
-        this.content= content
     }
 }
 
-class Like {
-    constructor(userId) {
-        this.id = Date.now()
-        this.userId =userId
-    }
-}
 
-export default { Post, Comment, Like }
+// module.exports = {
+//     Postit,
+//     User
+// }
+
+export default {
+    Postit,
+    User
+}

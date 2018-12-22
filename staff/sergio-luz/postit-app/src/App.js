@@ -1,125 +1,82 @@
 import React, { Component } from 'react'
-import logic from './logic'
 import Register from './components/Register'
 import Login from './components/Login'
-import Home from './components/Home'
+import Postits from './components/Postits'
 import Error from './components/Error'
+import Landing from './components/Landing'
+import logic from './logic'
+import Profile from './components/Profile'
+import { Route, withRouter, Redirect } from 'react-router-dom'
 
+logic.url = 'http://localhost:5000/api'
 
 class App extends Component {
+    state = { error: null }
 
-    state = {
-        texts: this.getTexts(), userId: this.getUserId(), register: false, login: false, error: null
-    }
+    handleRegisterClick = () => this.props.history.push('/register')
 
+    handleLoginClick = () => this.props.history.push('/login')
 
-    handleSubmit = this.handleSubmit.bind(this)
-    handleDelete = this.handleDelete.bind(this)
-    handleLogin = this.handleLogin.bind(this)
-
-    getTexts() {
-        const texts = JSON.parse(sessionStorage.getItem('postits'))
-
-        return texts ? (texts) : []
-    }
-
-    getUserId() {
-        const userId = sessionStorage.getItem('userId')
-
-        return userId ? parseInt(userId) : null
-    }
-
-    handleSubmit(text) {
-        logic.createPostit(text, this.state.userId)
-        let texts = logic.listPostits()
-        const userId = this.state.userId
-        texts = texts.filter((item) => item.userId === userId)
-
-        this.setState({ texts })
-    }
-
-    handleDelete(INDEXtoBeDeleted) {
-        logic.deletePostit(INDEXtoBeDeleted)
-
-        this.setState({ texts: logic.listPostits() })
-    }
-
-    handleEditPost = (id, el) => {
-        let element = document.getElementById(id)
-        if (element.childNodes[1].disabled === true) {
-            element.childNodes[1].disabled = false
-            logic.modifyPostit(id)
-            this.setState({ texts: logic.listPostits() })
-        }
-        else {
-            element.childNodes[1].disabled = true
-        }
-    }
-
-    OnHanldeRegister = () => {
-        this.setState({ register: !this.state.register })
-    }
-
-    OnHandleLogin = () => {
-        this.setState({ login: !this.state.login, error: null })
-    }
-
-    handleRegister(_name, _surname, _username, _password) {
-        logic.createUser(_name, _surname, _username, _password)
-    }
-
-    handleLogin(_username, _password) {
+    handleRegister = (name, surname, username, password) => {
         try {
-            const userId = logic.checkLogin(_username, _password)
-            let texts = logic.listPostits()
-            texts = texts.filter((item) => item.userId === userId)
-
-            this.setState({ texts, userId, login: false, register: false })
-
-            sessionStorage.setItem('userId', userId)
+            logic.registerUser(name, surname, username, password)
+                .then(() => {
+                    this.setState({ error: null }, () => this.props.history.push('/login'))
+                })
+                .catch(err => this.setState({ error: err.message }))
         } catch (err) {
-            this.setState({error : err.message })
+            this.setState({ error: err.message })
+        }
+    }
+
+    handleLogin = (username, password) => {
+        try {
+            logic.login(username, password)
+                .then(() => this.props.history.push('/postits'))
+                .catch(err => this.setState({ error: err.message }))
+        } catch (err) {
+            this.setState({ error: err.message })
         }
     }
 
     handleLogoutClick = () => {
+        logic.logout()
 
-        this.setState({ userId: '', register: false, login: false })
-        sessionStorage.setItem('userId', '')
+        this.props.history.push('/')
     }
 
-    activateUser() {
-        const texts = logic.listPostitsbyId(this.state.userId)
-        if (texts !== undefined) {
-            this.setState({ texts })
-        } else {
-            this.setState({ texts: [] })
-        }
+    handleProfileClick=()=>{
+        this.props.history.push('/profile')
     }
+
+    handleGoBack = () => this.props.history.push('/')
 
     render() {
-        const { register, login, userId, error } = this.state
+        const { error } = this.state
 
         return <div>
+            <Route exact path="/" render={() => !logic.loggedIn ? <Landing onRegisterClick={this.handleRegisterClick} onLoginClick={this.handleLoginClick} /> : <Redirect to="/postits" />} />
 
-            {!register && !login && !userId && <section>
-                <button onClick={this.OnHanldeRegister}>Register</button> or <button onClick={this.OnHandleLogin}>Login</button></section>}
+            <Route path="/register" render={() => !logic.loggedIn ? <Register onRegister={this.handleRegister} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
 
-            {this.state.register && <Register handleRegister={this.handleRegister} />}
-
-            {this.state.login && <Login handleLogin={this.handleLogin} />}
-
+            <Route path="/login" render={() => !logic.loggedIn ? <Login onLogin={this.handleLogin} onGoBack={this.handleGoBack} /> : <Redirect to="/postits" />} />
+            
             {error && <Error message={error} />}
 
-            {userId && <section><button onClick={this.handleLogoutClick}>Logout</button></section>}
 
-            {/* TODO show Home on successful login */}
-            {userId && <Home texts={this.state.texts} handleDelete={this.handleDelete} handleEditPost={this.handleEditPost} handleSubmit={this.handleSubmit} userId={userId} />}
+            <Route path="/postits" render={() => logic.loggedIn ? <div>
+                <section className='navbar'>
+                    <button onClick={this.handleLogoutClick}>Logout</button>
+
+                    <button onClick={this.handleProfileClick} >Profile</button>
+                </section>
+                <Postits message={error}/>
+            </div> : <Redirect to="/" />} />
+
+            <Route path="/profile" render={() =>  <Profile onGoBack={this.handleGoBack}/> } />
 
         </div>
-
-
     }
 }
 
-export default App;
+export default withRouter(App)

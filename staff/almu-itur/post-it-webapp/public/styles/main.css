@@ -1,0 +1,23 @@
+.title {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+.content-postit {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.postit {
+  background-image: url("http://astrodisco.net/wp-content/uploads/11-post-it-png.png");
+  background-size: 100%;
+  padding: 40px 15px 10px 15px;
+  width: 200px;
+  height: 215px;
+}
+
+/*# sourceMappingURL=main.css.map */

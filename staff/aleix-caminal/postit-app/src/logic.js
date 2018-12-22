@@ -7,13 +7,13 @@ const LOGIC = {
     posts: new PostsTable(),
     auth: JSON.parse(sessionStorage.getItem('auth')) || {},
 
-    addBoard(form, user_id) {
+    addBoard(form, userId) {
         if (typeof form !== 'object' || form.tagName !== 'FORM') throw Error('no form passed as argument')
 
         if (this.validate(form, ['title'])) {
             this.boards.newEntity({
                 title: form.querySelector('input[name="title"]').value,
-                user_id: user_id
+                userId: userId
             }).save()
         }
 
@@ -23,7 +23,7 @@ const LOGIC = {
 
         form.querySelector('input[name="title"]').value = ''
         return this.boards.find({
-            user_id: user_id
+            userId: userId
         })
     },
 
@@ -33,7 +33,7 @@ const LOGIC = {
         const board = this.boards.get(id)
         board.delete()
         return this.boards.find({
-            user_id: board.user_id
+            userId: board.userId
         })
     },
 
@@ -45,23 +45,23 @@ const LOGIC = {
         board.title = title
         board.save()
         return this.boards.find({
-            user_id: board.user_id
+            userId: board.userId
         })
     },
 
-    addPost(input, board_id) {
+    addPost(input, boardId) {
         if (typeof input !== 'object' || input.tagName !== 'INPUT') throw Error('no input passed as argument')
 
         if (input) {
             this.posts.newEntity({
                 title: input.value,
-                board_id: board_id
+                boardId: boardId
             }).save();
         }
 
         input.value = '';
         return this.posts.find({
-            board_id: board_id
+            boardId: boardId
         })
     },
 
@@ -71,7 +71,7 @@ const LOGIC = {
         const post = this.posts.get(id)
         post.delete()
         return this.posts.find({
-            board_id: post.board_id
+            boardId: post.boardId
         })
     },
 
@@ -126,11 +126,11 @@ const LOGIC = {
         if (!password) throw Error('password is not valid')
 
         try {
-            const user_id = this.users.find({
+            const userId = this.users.find({
                 username: username,
                 password: password
             })[0].id
-            return this.users.get(user_id)
+            return this.users.get(userId)
         } catch (e) {
             return false
         }

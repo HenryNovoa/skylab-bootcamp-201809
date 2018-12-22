@@ -1,0 +1,197 @@
+* {
+  font-family: "Amatic SC", cursive;
+  margin: 0;
+}
+
+.home {
+  background-image: url("https://thewallpapers.org/zoom/22351/nebula.jpg");
+  width: inherit;
+  height: 1000px;
+  position: relative;
+}
+
+.background {
+  background-color: black;
+  background-image: url("https://thewallpapers.org/zoom/22351/nebula.jpg");
+  width: inherit;
+  height: 900px;
+  position: relative;
+}
+
+.navbar {
+  color: gold;
+  font-size: 2em;
+  margin: 0;
+}
+
+.back {
+  font-size: 1.5em;
+}
+
+.logout, .back {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 10;
+}
+
+.error {
+  color: red;
+  position: absolute;
+  top: 57%;
+  right: 47%;
+  z-index: 10;
+}
+
+.postit-error {
+  color: red;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 3%;
+  height: 30px;
+}
+
+.postIt {
+  background-color: gold;
+  width: 130px;
+  height: 130px;
+  border: 1px solid skyblue;
+  margin: 1em;
+  border-radius: 10%;
+  padding: 2%;
+  position: relative;
+}
+
+.postIt textarea {
+  background: transparent;
+  border: none;
+  width: 130px;
+  height: 100px;
+  resize: none;
+  position: absolute;
+  top: 33px;
+  font-family: "Caveat", cursive;
+  font-size: 0.8em;
+}
+
+.postIt__button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  right: 5px;
+}
+
+.postit-board {
+  display: grid;
+  grid-template-columns: 1% 1fr 1fr 1fr 1fr 1%;
+  font-size: 1.7em;
+  max-height: 800px;
+}
+
+.postit-col {
+  justify-self: center;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ccc2c2;
+  border-radius: 10px;
+  padding: 1rem;
+  width: 200px;
+  max-height: 800px;
+}
+
+.postit-col--todo {
+  grid-column: 2/span 1;
+  height: fit-content;
+}
+
+.postit-col--doing {
+  grid-column: 3/span 1;
+  height: fit-content;
+}
+
+.postit-col--review {
+  grid-column: 4/span 1;
+  height: fit-content;
+}
+
+.postit-col--done {
+  grid-column: 5/span 1;
+  height: fit-content;
+}
+
+.form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 3%;
+  height: 30px;
+}
+
+.form input {
+  border-radius: 15px;
+  padding-left: 1em;
+  font-size: 1.5em;
+}
+
+.form button {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.landing-buttons-sec {
+  margin: 10%;
+  position: absolute;
+  top: 20%;
+  right: 30%;
+}
+
+.landing-button {
+  font-size: 1.3em;
+  height: 40px;
+  width: 60px;
+  border-radius: 15%;
+  margin: 3%;
+}
+
+.button {
+  font-size: 1em;
+  height: 25px;
+  border-radius: 15%;
+  margin: 1%;
+}
+
+.form-log, .form-reg {
+  font-size: 1.7em;
+  position: absolute;
+  top: 20%;
+  right: 35%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 10%;
+}
+
+.form-log input, .form-reg input {
+  font-size: 0.8em;
+  height: 30px;
+  width: 150px;
+  margin: 2%;
+  border-radius: 10%;
+}
+
+.form-log button, .form-reg button {
+  font-size: 0.9em;
+  height: 30px;
+  width: 90px;
+  margin: 2%;
+  border-radius: 10%;
+}
+
+/*# sourceMappingURL=style.css.map */

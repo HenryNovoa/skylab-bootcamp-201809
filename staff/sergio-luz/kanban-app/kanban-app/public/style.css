@@ -1,0 +1,191 @@
+
+body{
+        background-image: url("http://blog.hostbaby.com/wp-content/uploads/2014/03/PaintSquares_1400x900-1024x658.jpg");
+        margin: 0px;
+}
+.post {
+    background-color: #ffed89;
+    margin: 10px;
+    box-shadow: 4px 6px 5px #aaaa8f80;
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px 30px;
+}
+
+.post textarea {
+    background: transparent;
+    border: none;
+    width: inherit;
+    height: inherit;
+    resize: none;
+}
+
+.button--postit {
+    border-width: 1px;
+    border-style: outset;
+    border-color: #FF9800;
+    background: #ff572252;
+    cursor: pointer;
+    border-radius: 7px 25px;
+    
+}
+
+.post .selector{
+    background: #fff5ee00;
+    border-radius: 7px 25px;    
+    border: 1px solid orange;
+}
+
+.fa-sticky-note {
+    color: gold;
+}
+
+.error {
+    color: red;
+}
+
+.landing{
+    display: flex;
+    justify-content: center;
+    background-size: cover;
+}
+
+.landing__options{
+    width: 25vw;
+    height: 100vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.options__container{
+    height: 20vh;
+    width: 20vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-image: linear-gradient(to bottom right, #5d9323,#3e838a, #c98a3b,#8ebd57,#246166);
+    box-shadow: 5px 5px 5px #00000073;
+}
+
+.login-register{
+    height: 100vh;
+    width:100vw;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.login-register .button--white{
+    background: #a8ff45;
+}
+
+.navbar{
+    display: flex;
+    justify-content: space-between;
+}
+
+.home__body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.board__postits{
+    display: flex;
+    width: 100vw;
+    min-height: 70vh;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-around;
+    max-width: 95vw;
+}
+
+.profile__body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 97vh;
+}
+
+.profile__options{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.board__column{
+    text-align: center;
+    min-height: 65vh;
+    min-width: 20vw;
+    background-image: linear-gradient(to bottom right, #f5f5f58f,#dad8d985);
+    border-radius: 15px 50px;
+    padding-bottom: 20px;
+    padding-right: 5px;
+    padding-left: 5px;
+    box-shadow: 4px 6px 5px #aaaa8f80;
+}
+
+.board__column h3{
+text-shadow: 5px 5px 10px #aaaa8f;
+}
+.button{
+    padding: 5px 20px;
+    border-radius: 7px 7px;
+    border: none;
+    box-shadow: 5px 5px 5px #00000073;
+    margin: 5px 5px 0px 5px;
+    cursor: pointer;
+}
+
+.button--white{
+    background: aliceblue;
+}
+
+.button--green{
+    background: #a8ff45;
+}
+
+.home__body h1{
+    width: 100%;
+    position: relative;
+    margin: 0vh;
+    display: flex;
+    justify-content: center;
+    /* background: #245f6442;
+    box-shadow: 3px 8px 30px #2661637d; */
+}
+
+.home__body form{
+    background: #8bc34ae0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 30px 0px;
+    box-shadow: 3px 3px 50px #73a836;
+}
+
+.input--white{
+    padding: 5px 20px;
+    padding: 5px 20px;
+    border-radius: 7px 7px;
+    border: none;
+    background: aliceblue;
+    box-shadow: 5px 5px 5px #0000004a;
+    margin: 5px 5px 0px 5px;
+}
+
+.input--white .selector{
+    border: none;
+    border-radius: inherit;
+}
+
+button.input--white {
+    cursor: pointer;
+}
+
+label.input--white{
+    font-weight: bold;
+}

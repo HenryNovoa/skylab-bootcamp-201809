@@ -1,85 +1,50 @@
 import React, { Component } from 'react'
-import logic from '../logic'
-
-///////////////////////////
-// class User {
-//     constructor(name, surname, username, password) {
-//         this.name = name
-//         this.surname = surname
-//         this.username = username
-//         this.password =password
-//         this.id = Date.now()
-//     }
-////////////////////////////////////////
 
 class Register extends Component {
+    state = { name: '', surname: '', username: '', password: '' }
 
-    state = { _Users: [], _name: '', _surname: '', _username: '', _password: '' }
+    handleNameChange = event => {
+        const name = event.target.value
 
-    constructor() {
-        super()
-        let users = logic.listUsers()
-
-        console.log(users)
-        if (users === null) {
-            users = [] 
-            logic.persistUsers(users)
-        }
+        this.setState({ name })
     }
 
-    handleRegister = this.handleRegister.bind(this)
-    handleRegister(event) {
+    handleSurnameChange = event => {
+        const surname = event.target.value
+
+        this.setState({ surname })
+    }
+
+    handleUsernameChange = event => {
+        const username = event.target.value
+
+        this.setState({ username })
+    }
+
+    handlePasswordChange = event => {
+        const password = event.target.value
+
+        this.setState({ password })
+    }
+
+    handleSubmit = event => {
         event.preventDefault()
 
-        console.log('entra\n=>', this.state._name, this.state._surname, this.state._username, this.state._password)
+        const { name, surname, username, password } = this.state
 
-        this.props.handleRegister(this.state._name, this.state._surname, this.state._username, this.state._password)
-    }
-
-    handleInput_Name = event => {
-        console.log('esta cambiando el name')
-
-        const _name = event.target.value
-
-        this.setState({ _name })
-    }
-
-    handleInput_Surname = event => {
-        console.log('esta cambiando el surname')
-
-        const _surname = event.target.value
-
-        this.setState({ _surname })
-    }
-
-    handleInput_Username = event => {
-        console.log('esta cambiando el username')
-
-        const _username = event.target.value
-
-        this.setState({ _username })
-    }
-
-    handleInput_Password = event => {
-        console.log('esta cambiando el password')
-
-        const _password = event.target.value
-
-        this.setState({ _password })
+        this.props.onRegister(name, surname, username, password)
     }
 
     render() {
-        return <form onSubmit={this.handleRegister}>
-            <input onChange={this.handleInput_Name} value={this.state.name} type="text" placeholder="Name"></input>
-
-            <input onChange={this.handleInput_Surname} type="text" placeholder="Surname"></input>
-
-            <input onChange={this.handleInput_Username} type="text" placeholder="Username"></input>
-
-            <input onChange={this.handleInput_Password} type="password" placeholder="Password"></input>
-
-            <button type='submit'> Register </button>
-        </form>
+        return <div className='login-register'>
+            <form onSubmit={this.handleSubmit} className='profile__body'>
+                <input type="text" placeholder="Name" onChange={this.handleNameChange} />
+                <input type="text" placeholder="Surname" onChange={this.handleSurnameChange} />
+                <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
+                <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
+                <button type="submit">Register</button> <a href="#" onClick={this.props.onGoBack}>back</a>
+            </form>
+        </div >
     }
 }
 

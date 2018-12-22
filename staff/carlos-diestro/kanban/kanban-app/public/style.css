@@ -1,0 +1,28 @@
+html, body {
+    height: 100%;
+}
+
+.status {
+    min-width: 250px;
+}
+
+.post {
+    background-color: yellow;
+    max-width: 300px;
+}
+
+.post textarea {
+    background: transparent;
+    border: none;
+    /* width: inherit;
+    height: inherit; */
+    resize: none;
+}
+
+.fa-sticky-note {
+    color: gold;
+}
+
+.error {
+    color: red;
+}

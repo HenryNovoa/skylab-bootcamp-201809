@@ -1,0 +1,24 @@
+extends layout
+block content
+    section(class='board')
+        section(class='board__forms')
+            form(method="POST" action = "/user/register")
+                .group-field
+                    h1(class="") #{errorMessage} #{message}    
+                .group-field
+                    input(type='text' name='name' placeholder='name...')
+                .group-field
+                    input(type='text' name='surname' placeholder='surname...')
+                .group-field
+                    input(type='email' name='email' placeholder='email...')
+                .group-field
+                    input(type='phone' name='phone' placeholder='phone...')
+                .group-field
+                    input(type='usnername' name='username' placeholder='username...')
+                .group-field
+                    input(type='password' name='password' placeholder='password...')
+                .group-field
+                    input(class="button" type='submit' name='submit' value='Register')
+                    a(class='button' href="/") Back        
+        
+            

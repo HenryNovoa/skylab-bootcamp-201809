@@ -7,49 +7,48 @@ class Postits extends Component {
     state = { postits: [] }
 
     componentDidMount() {
-        console.log('Postits', 'componentDidMount')
-
-        const { userId, token } = this.props
-
-        logic.listPostitsByUser(userId, token)
+        logic.listPostits()
             .then(postits => { this.setState({ postits }) })
+
+        // TODO error handling!
     }
 
     handleSubmit = text => {
-        const { userId, token } = this.props
-
-        logic.createPostit(text, userId, token)
-            .then(() => logic.listPostitsByUser(userId, token))
-            .then(postits => this.setState({ postits }))
+        try {
+            logic.addPostit(text)
+                .then(() => logic.listPostits())
+                .then(postits => this.setState({ postits }))
+        } catch ({ message }) {
+            alert(message) // HORROR! FORBIDDEN! ACHTUNG!
+        }
     }
 
-    handleDeletePost = id => {
-        const { userId, token } = this.props
+    // TODO error handling!
 
-        logic.deletePostit(id, userId, token)
-            .then(() => logic.listPostitsByUser(userId, token))
-            .then(postits => this.setState({ postits }))
-    }
-
-    handleUpdatePost = (id, text) => {
-        const { userId, token } = this.props
-
-        logic.updatePostit(id, text, userId, token)
-            .then(() => logic.listPostitsByUser(userId, token))
+    handleRemovePostit = id =>
+        logic.removePostit(id)
+            .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
-    }
+    // TODO error handling!
+
+
+    handleModifyPostit = (id, text) =>
+        logic.modifyPostit(id, text)
+            .then(() => logic.listPostits())
+            .then(postits => this.setState({ postits }))
+
+    // TODO error handling!
+
 
     render() {
-        console.log('Postits', 'render')
-
         return <div>
             <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
 
             <InputForm onSubmit={this.handleSubmit} />
 
             <section>
-                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleDeletePost} onUpdatePost={this.handleUpdatePost} />)}
+                {this.state.postits.map(postit => <Post key={postit.id} text={postit.text} id={postit.id} onDeletePost={this.handleRemovePostit} onUpdatePost={this.handleModifyPostit} />)}
             </section>
         </div>
     }

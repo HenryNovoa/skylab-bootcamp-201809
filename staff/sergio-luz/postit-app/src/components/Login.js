@@ -1,37 +1,37 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
 class Login extends Component {
     state = { username: '', password: '' }
 
-    handleLogin=this.handleLogin.bind(this)
-    handleLogin(event){
-        event.preventDefault()
-
-        this.props.handleLogin(this.state.username, this.state.password)
-    }
-
-    handleInput_Username = event => {
-        console.log('esta cambiando el username')
-
+    handleUsernameChange = event => {
         const username = event.target.value
 
         this.setState({ username })
     }
 
-    handleInput_Password = event => {
-        console.log('esta cambiando el password')
-
+    handlePasswordChange = event => {
         const password = event.target.value
 
         this.setState({ password })
     }
 
+    handleSubmit = event => {
+        event.preventDefault()
+
+        const { username, password } = this.state
+
+        this.props.onLogin(username, password)
+    }
+
     render() {
-        return <form onSubmit={this.handleLogin}>
-            <input type="text" placeholder="Username" onChange={this.handleInput_Username} />
-            <input type="text" placeholder="Password" onChange={this.handleInput_Password} />
-            <button type="submit">Login</button>
-        </form>
+        return<div className='login-register'>
+             <form onSubmit={this.handleSubmit} className='profile__body'>
+                <input type="text" placeholder="Username" onChange={this.handleUsernameChange} />
+                <input type="password" placeholder="Password" onChange={this.handlePasswordChange} />
+                {/* <button type="submit">Login</button> <a href="/#/">back</a> */}
+                <button type="submit">Login</button> <a href="#" onClick={this.props.onGoBack}>back</a>
+            </form>
+        </div>
     }
 }
 

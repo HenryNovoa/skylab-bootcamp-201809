@@ -1,0 +1,29 @@
+extends layout
+block content
+    div(class='home')
+      p Welcome #{name}!
+      a(href='/logout') logout
+      form(class='home__form', method='POST', action='/postits')
+        input(class='home__postit', type='text', name='text')
+        button(type='submit', value='add', name='operation') Add
+      if error
+        p(class='error') #{error}
+      if postits.length  
+        ul
+          each postit in postits
+            li
+              if (postitId != postit.id)
+                div(class='text')| #{postit.text}
+                form(method='POST', action='/postits')
+                  input(class='postit', type='hidden', value=postit.id, name='postitId')
+                  div(class='buttons')
+                    button(type='submit', value='edit', name='operation') Edit
+                    button(type='submit', value='remove', name='operation') Remove
+              else
+                form(method='POST', action='/postits')
+                  input(type='text', value=postit.text, name='text')
+                  input(type='hidden', value=postit.id, name='postitId')
+                  div(class='buttons')
+                    button(type='submit', value='save', name='operation') Save
+                    button(type='submit', value='remove', name='operation') Remove
+        

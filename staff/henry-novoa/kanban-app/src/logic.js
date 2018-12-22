@@ -166,7 +166,75 @@ const logic = {
             .then(res => {
                 if (res.error) throw Error(res.error)
             })
+    },
+
+    addBuddy(username){
+      
+        if (typeof username !== 'string') throw TypeError(`${username} is not a string`)
+
+        if (!username.trim()) throw Error('status is empty or blank')
+       
+        return fetch(`${this.url}/users/${this._userId}/buddies`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ username })
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+
+
+    assignPostitTo(buddyId,postitId){
+        if (typeof postitId !== 'string') throw new TypeError(`${postitId} is not a string`)
+
+        if (!postitId.trim().length) throw Error('id is empty or blank')
+
+        if (typeof buddyId !== 'string') throw TypeError(`${buddyId} is not a string`)
+
+        if (!buddyId.trim()) throw Error('status is empty or blank')
+
+        
+        return fetch(`${this.url}/users/${this._userId}/postits/${postitId}/buddies`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+            body: JSON.stringify({ buddyId })
+        })
+            .then(res => res.json())
+            .then(res => {
+                debugger
+                if (res.error) throw Error(res.error)
+            })
+    },
+
+    listBuddies(){
+        debugger
+        return fetch(`${this.url}/users/${this._userId}/buddies`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Authorization': `Bearer ${this._token}`
+            },
+        })
+            .then(res => res.json())
+            .then(res => {
+                if (res.error) throw Error(res.error)
+                
+                
+                
+                return res.buddies
+            })
+
     }
+       
 }
 
 // export default logic

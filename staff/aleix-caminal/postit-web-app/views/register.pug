@@ -1,0 +1,25 @@
+extends layout
+
+block content
+    section(class='main__content main__content--center')
+        section(class='register')
+            h2(class='register__title') Register to Cello
+            form(id='register_form', class='form', action='/register', method='post')
+                div(class='form__group')
+                    label(class='form__label') Name
+                    input(class='form__input', name='name', type='text')
+                div(class='form__group')
+                    label(class='form__label') Username
+                    input(class='form__input', name='username', type='text')
+                div(class='form__group')
+                    label(class='form__label') Password
+                    input(class='form__input', name='password', type='password')
+                div(class='form__group')
+                    label(class='form__label') Confirm Password
+                    input(class='form__input', name='confirm_password', type='password')
+                div(class='form__buttons')
+                    button(class='form__button') Sign Up
+                    p(class='form__text')
+                        | or 
+                        a(href='/login', class='form__link') Log In
+    script(src="/js/register.js")

@@ -1,0 +1,15 @@
+extends layout
+block content
+    section(class='board')
+        section(class='board__forms')
+            form(method="POST" action = "/user/login")
+                h2(class="errormessage") #{errorMessage}      
+                .group-field
+                    input(type='usnername' name='username' placeholder='username...')
+                .group-field
+                    input(type='password' name='password' placeholder='password...')
+                .group-field
+                    input(class="button" type='submit' name='submit' value='Send')
+                    a(class='button' href="/") Back        
+        
+            

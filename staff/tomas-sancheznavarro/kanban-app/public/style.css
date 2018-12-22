@@ -1,0 +1,41 @@
+* {
+font-family: 'Open Sans', sans-serif;
+
+}
+
+.post {
+    background-color: yellow;
+    width: 150px;
+    height: 100px;
+    margin: 10px;
+    margin-bottom: 50px;
+}
+
+.post textarea {
+    background: transparent;
+    border: none;
+    width: inherit;
+    height: inherit;
+    resize: none;
+}
+
+.fa-sticky-note {
+    color: gold;
+}
+
+.error {
+    color: red;
+}
+
+.container {
+    width: 100%;
+    margin: 50px;
+    display: flex;
+    flex-direction: row;
+}
+
+.postit-col {
+    width: 200px;
+    background: whitesmoke;
+    margin-right: 10px
+}

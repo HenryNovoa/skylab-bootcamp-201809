@@ -1,0 +1,49 @@
+extends layout
+block content
+    include includes/editpostitmodal.pug
+    section(class='board')
+        section(class='board__forms')
+            form(method="POST" action = "/postit/add")
+                h2(class="errormessage") #{errorMessage} #{message}      
+                .group-field
+                    input(type='usnername' name='content' placeholder='Write something...')
+                .group-field
+                    input(class="button" type='submit' name='submit' value='Add Postit')
+                    a(class='button' href="/logout") Logout
+        section(class="board__panel-postits")
+            each postit in postits
+                article(class="postit") #{postit.content}
+                    a(href="#" data-postitId=postit.id class="icon-x")
+                    button(data-postitId=postit.id data-editbutton="edit" class="btn btn-primary btn-lg") Edit
+        script.
+            $(".postit a").on("click", function(ev){
+                
+               $.ajax({
+                   method:"DELETE",
+                   url:`/postit/delete/${$(this).attr("data-postitId")}`,
+                   error:function(xhr, status, errorThrown){
+                       alert(errorThrown)
+                   },
+                   success:function(data,status,xhr){
+                                             
+                       if (data.error){
+                             $("h2").first().text(data.error)
+                             if (data.redirectTo)
+                                window.location = data.redirectTo
+                       }
+                       else{
+                          $(ev.target).parent().remove()
+                           $("h2").first().text(data.message)
+                       }
+                   }
+                  
+               })
+            })
+
+            $("button[data-editbutton='edit']").each(function(i,button){
+                $(this).on("click", function(ev){
+                $("#postitId").val($(this).attr("data-postitId"))
+                $("#editpostitmodal").modal("show")
+            })       
+            })
+        

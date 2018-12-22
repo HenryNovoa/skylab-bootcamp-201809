@@ -1,0 +1,21 @@
+doctype html
+html(lang='en')
+    head
+        meta(charset='utf-8')
+        link(rel='stylesheet', type='text/css', href='/css/styles.css')
+        title Postit Web App
+    body
+        header(class='header')
+            h1(class='header__title')
+                span(role='img', aria-label='jsx-a11y/accessible-emoji') 🎻
+                |  Cello
+            if auth && Object.keys(auth).length > 0
+                div(class='dropdown')
+                    span(class='dropdown__title') #{auth.username}
+                    div(class='dropdown__content')
+                        ul(class='dropdown__list')
+                            li
+                                a(href='/logout', class='dropdown__link') Log Out
+        section(class='main')
+            block content
+    script(src="/js/shared.js")

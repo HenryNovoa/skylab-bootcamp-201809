@@ -1,0 +1,12 @@
+extends layout
+block content
+    div(class='register')
+      form(class='register__form', action='/register', method='POST')
+        input(class='register__input', type='text', name='name', placeholder='Name')
+        input(class='register__input', type='text', name='surname', placeholder='Surname')
+        input(class='register__input', type='text', name='username', placeholder='username')
+        input(class='register__input', type='password', name='password', placeholder='password')
+        button(type='submit') Register
+      if error
+        p(class='error') #{error}
+      a(href='/') go back

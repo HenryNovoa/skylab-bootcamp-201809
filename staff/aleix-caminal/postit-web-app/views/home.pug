@@ -1,0 +1,36 @@
+extends layout
+
+mixin post(post)
+    article(id='post'+post.id, class='post', draggable='true', ondragstart='drag('+post.id+', event)')
+        form(action='/post', method='post')
+            input(type='hidden', name='id', value=post.id)
+            button(class='post__button', name='action', value='delete') X
+        h3(class='post__title') #{post.title}
+
+mixin board(board)
+    section(id='board'+board.id, class='board' ondrop='drop('+board.id+', event)' ondragover='prepareToDrop(event)')
+        form(action='/board', method='post')
+            input(type='hidden', name='id', value=board.id)
+            button(class='board__button', name='action', value='delete') X
+        form(action='/board', method='post')
+            input(class='board__title', name='title', value=board.title, onblur='this.parentElement.submit()')
+            input(type='hidden', name='id', value=board.id)
+            input(type='hidden', name='action', value='update')
+        if board.posts && board.posts.length > 0
+            each post in board.posts
+                +post(post)
+        form(action='/post', method='post')
+            input(class='board__input', name='title', placeholder='Add another post')
+            input(type='hidden', name='board_id', value=board.id)
+            input(type='hidden', name='action', value='add')
+
+block content
+    section(class='main__content')
+        if boards && boards.length > 0
+            each board in boards
+                +board(board)
+        section(class='add')
+            form(id='add_board_form', action='/board', method='post')
+                input(class='add__input', type='text', name='title', placeholder='Add another board')
+                button(class='add__button', name='action', value='add') Add Board
+    script(src="/js/home.js")

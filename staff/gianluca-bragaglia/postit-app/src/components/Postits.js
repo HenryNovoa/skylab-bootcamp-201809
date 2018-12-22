@@ -14,14 +14,14 @@ class Postits extends Component {
     }
 
     handleSubmit = text =>
-        logic.createPostit(text)
+        logic.addPostit(text)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
     // TODO error handling!
 
     handleDeletePost = id =>
-        logic.deletePostit(id)
+        logic.removePostit(id)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
@@ -29,7 +29,7 @@ class Postits extends Component {
 
 
     handleUpdatePost = (id, text) =>
-        logic.updatePostit(id, text)
+        logic.modifyPostit(id, text)
             .then(() => logic.listPostits())
             .then(postits => this.setState({ postits }))
 
@@ -38,7 +38,7 @@ class Postits extends Component {
 
     render() {
         return <div>
-            <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>
+            <h1 className='h1' >Post-It App</h1>
 
             <InputForm onSubmit={this.handleSubmit} />
 

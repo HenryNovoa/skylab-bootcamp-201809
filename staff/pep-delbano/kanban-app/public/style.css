@@ -1,0 +1,248 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+ }
+ 
+ .container-landing {
+    z-index: -10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+    background: url('./img/abstract-effect.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+ }
+
+ .landing-title {
+    margin: 200px auto 100px;
+    font-size: 100px;
+    color: #c61260a6;
+    text-shadow: 3px 2px 4px #6e4d4ded;
+ }
+
+ .landing-buttons {
+    display: flex;
+    justify-items: space-between;
+    width: 700px;
+    border: 5px solid #c61260a6;
+    padding: 15px;
+    border-radius: 20px;
+ }
+
+ .landing-buttons > :first-child {
+     position: relative;
+     display: inline-block;
+     left: 5px;
+ }
+
+ .landing-buttons > :last-child {
+    position: relative;
+    display: inline-block;
+    left: 462px;
+}
+
+
+ .container-register {
+    z-index: -10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background: url('./img/crhomaic-abstraction.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+ }
+
+ .register-title {
+    margin: 50px;
+    font-size: 100px;
+    color: #D03315;
+    text-shadow: 3px 2px 4px #0000005e;
+    top: 100px;
+ }
+
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+ .form-register {
+    width: 500px;
+    border: 5px solid #D03315;
+    padding: 30px;
+    border-radius: 20px;
+ }
+
+ 
+
+
+ .container-login {
+     z-index: -10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background: url('./img/angel-in-smoke.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+
+ }
+
+ .login-title {
+    margin: 50px;
+    font-size: 100px;
+    color: #1C06A8;
+    text-shadow: 3px 2px 4px #0000005e;
+    top: 100px;
+ }
+
+ .form-login {
+    width: 500px;
+    border: 5px solid #1C06A8;
+    padding: 30px;
+    border-radius: 20px;
+ }
+
+.error {
+    color: red;
+    font-weight: 700;
+}
+
+
+
+
+
+/* .fa-sticky-note {
+    color: rgba(244, 248, 8, 0.801);
+    font-size: 100px;
+} */
+
+
+/*postit home: */
+.container-home{
+    z-index: -10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background: url('./img/smoke-home.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+nav {
+    width: 90vw;
+    bottom: 50px;
+    background-color: #020202;
+    border-radius: 20%;
+    padding-top: 10px;
+}
+
+.nav-title {
+    color: #fffff0;
+    font-size: 80px;
+    font-weight: 700;
+    font-family: 'Roboto', sans-serif;
+    margin: 10px auto 10px 50px;
+    text-shadow: 3px 2px 5px #c7b9b9b6;
+}
+
+.nav-rightSide {
+    font-size: 20px;
+    color: white;
+    width: 150px;
+    display: flex;
+    justify-items: space-between;
+    cursor: pointer;
+}
+
+
+.postits-container {
+    display: flex;
+    flex-direction: column;
+    width: 95vw;
+    height: 80vh;
+    border: 2px solid white;
+    border-radius: 15px;
+    background: rgba(158, 158, 158, 0.25);
+
+}
+
+.createPostit-form {
+    padding: 5px;
+    margin: 10px 5px;
+}
+
+.createPostit-input {
+    margin: -4px 10px;
+    height: 60px;
+}
+
+.postits-content {
+    display: flex;
+    justify-items: center;
+    height: 100%;
+}
+
+.columnStatus {
+    display: flex;
+    position: relative;
+    margin: 5px 10px;
+    height: 98%;
+    width: 95%;
+    border: 3px solid white;
+    border-radius: 13px;
+    color: white;
+    justify-content: center;
+    align-items: start;
+}
+
+.post {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    width: 90%;
+    background-color: hsla(60, 100%, 50%, 0.719);
+    height: 120px;
+    bottom: 10px;
+ }
+ 
+ .post textarea {
+    background: transparent;
+    position: relative;
+    border: none;
+    width: 100%;
+    height: inherit;
+    resize: none;
+    font-family: 'Gochi Hand', cursive;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.delete-button  {
+    width: 17%;
+    padding: 5px 0;
+    position: absolute;
+    right: 0;
+}
+

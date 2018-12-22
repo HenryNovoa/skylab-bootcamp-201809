@@ -1,0 +1,22 @@
+.title {
+    color: green;
+}
+
+.error {
+    color: red;
+}
+
+li {
+    list-style-type: none;
+}
+
+textarea{
+    background-color: yellowgreen;
+    width: 150px;
+    height: 150px;
+    resize: none;
+}
+
+button{
+    margin-bottom: 30px;
+}

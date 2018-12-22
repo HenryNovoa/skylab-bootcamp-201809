@@ -1,0 +1,16 @@
+.header{
+    & .main-nav{
+        .nav{
+            justify-content: flex-end;
+            & .nav-item{
+                a {
+                    text-decoration: none;
+                    color:blue;
+                    &:hover{
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
+}

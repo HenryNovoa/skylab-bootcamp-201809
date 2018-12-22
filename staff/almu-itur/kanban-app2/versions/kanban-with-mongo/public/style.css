@@ -1,0 +1,156 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+.landing-page{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: url("./images/typewriter-801921_1920.jpg");
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+}
+
+.login-container {
+    margin: 0 auto;
+    text-align: center;
+    width: 30%;
+    margin-top: 8%;
+}
+
+.register-container {
+    margin: 0 auto;
+    text-align: center;
+    width: 30%;
+    margin-top: 8%;
+}
+
+.input-bar {
+    display: flex;
+    width: 90%;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+#button-add {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin: 5px;
+}
+
+.logout-button-section {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-content: flex-end;    
+}
+
+.logout-button {
+    border-radius: 10%;
+    padding: 10px;
+    margin: 10px;
+    color:White;
+    font-size:14px;
+    background-color: grey;
+    text-align: right;
+    text-justify: center;
+}
+
+.postits-page {
+    background: white;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    margin: 0 auto;
+}
+
+.columns-container{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.column{
+    width: 22%;
+    padding: 5px;
+    margin: 20px 5px;
+    background-color: #E8E2E1;
+}
+
+.column-title {
+    margin: 10px;
+    background-color: #DCD6D5;
+}
+
+.delete-postit { 
+    display: flex;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-content: flex-end;   
+}
+
+.button-delete {
+    display: flex;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-content: flex-end;   
+    margin: 5px;
+}
+
+.post {
+    background-color: white;
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10%;
+    border-radius: 8px;
+}
+
+.post textarea {
+    background: transparent;
+    border: none;
+    /* width: 100px; */
+    height: 80px;
+    font-family: "Roboto", sans-serif;
+    resize: none;
+}
+
+.error {
+    color: red;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #880e4f;
+}
+
+.aLink{
+  text-decoration: none !important;
+  color: white;  
+}
+
+.aLink:hover{
+  text-decoration: none !important;
+  color: rgb(224, 219, 219);  
+}
+

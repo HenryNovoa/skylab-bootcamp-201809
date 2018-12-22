@@ -4,7 +4,7 @@
     background: transparent;
     width: inherit;
     height: inherit;
-    /* resize: none; */
+    resize: none;
 }
 
 .fa-sticky-note {

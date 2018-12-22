@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1541149480825,
+        "name": "manuel",
+        "surname": "barzi",
+        "username": "mb",
+        "password": "123"
+    },
+    {
+        "id": 1541154956443,
+        "name": "francisco",
+        "surname": "fernandez",
+        "username": "u",
+        "password": "p"
+    },
+    {
+        "id": 1541155273660,
+        "name": "francisco",
+        "surname": "fernandez",
+        "username": "paco",
+        "password": "123"
+    }
+]

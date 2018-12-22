@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    section(class='main__content main__content--center')
+        section(class='login')
+            h2(class='login__title') Login to Cello
+            form(id='login_form', class='form', action='/login', method='post')
+                div(class='form__group')
+                    label(class='form__label') Username
+                    input(class='form__input', name='username', type='text')
+                div(class='form__group')
+                    label(class='form__label') Password
+                    input(class='form__input', name='password', type='password')
+                div(class='form__buttons')
+                    button(class='form__button') Log In
+                    p(class='form__text')
+                        | or 
+                        a(href='/register', class='form__link') Sign Up
+    script(src="/js/login.js")

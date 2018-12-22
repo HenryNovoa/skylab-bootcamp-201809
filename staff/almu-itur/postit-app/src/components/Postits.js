@@ -38,7 +38,6 @@ class Postits extends Component {
     }
 
     render() {
-        console.log('Postits', 'render')
 
         return <div>
             <h1>Post-It App <i className="fas fa-sticky-note"></i></h1>

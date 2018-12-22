@@ -1,0 +1,27 @@
+extends layout
+block content
+      p Welcome #{name}!
+      form(action='new-postit', method='GET')
+        button(type='submit') Create postit  
+      div
+        ul
+          each val in postits
+            li
+              if (postitId != val.id)
+                textarea= val.text
+                form(action='delete-postit', method='POST')
+                  //- input(type='text', name='postitId', value=val.id)
+                  button(type='submit', name='postitId', value=val.id) Delete
+                form(action='edit-postit', method='POST')
+                  button(type='submit', name='postitId', value=val.id) Edit
+              
+              if (postitId === val.id)
+                textarea= val.text
+                form(action='delete-postit', method='POST')
+                  //- input(type='text', name='postitId', value=val.id)
+                  button(type='submit', name='postitId', value=val.id) Delete
+                form(action='edit-postit', method='POST')
+                  button(type='submit', name='postitId', value=val.id) Save
+
+
+      a(href='/logout') logout

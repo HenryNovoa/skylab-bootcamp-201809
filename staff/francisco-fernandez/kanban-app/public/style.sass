@@ -1,0 +1,114 @@
+body 
+    font-family: 'Oswald', sans-serif
+    background-color: #dffcc2
+
+.landing
+    
+    margin: auto
+    max-width: 400px
+    height: 300px
+    border: 1px solid #998686
+    border-radius: 7px
+    margin-top: 100px
+    text-align: center
+    background-color: #c7fc55
+
+.landing_title
+
+    padding-top: 90px
+
+.landing__button
+    width: 110px
+    height: 40px
+    background-color: white 
+    border-radius: 7px
+    font-family: 'Oswald', sans-serif
+    font-size: 110%
+
+.register
+    @extend .landing
+
+.register__inputs
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: center
+    margin-top: 10px
+    
+.register__input
+    width: 170px
+    margin: 20px 0 0 0
+
+.register__buttons
+    margin-top: 40px
+
+.register__button
+    @extend .landing__button
+        
+.login
+    @extend .landing
+
+.login__inputs
+    @extend .register__inputs
+    margin-top: 60px
+
+.login__input
+    @extend .register__input
+
+.login__buttons
+    @extend .register__buttons
+
+.login__button
+    @extend .register__button
+
+.logout__button
+    @extend .register__button
+
+.postits__head
+    text-align: center
+    border-bottom: 1px solid #998686
+    padding-bottom: 30px
+
+.postits__state
+    margin: 10px
+
+.post 
+    background-color: #b2f96b
+    width: 150px
+    height: 150px
+    margin: 10px
+    border-radius: 10px
+
+
+.post__textarea
+    background: transparent
+    border: none
+    width: 145px
+    height: 115px
+    resize: none
+
+.post__buttons
+    text-align: center
+
+.post__button
+    background-color: transparent 
+    border: none
+
+.post__select
+    background-color: #b2f96b
+    border: none
+
+.fa-sticky-note 
+    color: #b2f96b
+
+
+.error 
+    color: red
+    align: center
+    max-width: 300px
+    margin: auto
+
+
+.postits__container 
+    display: flex
+    justify-content: space-around

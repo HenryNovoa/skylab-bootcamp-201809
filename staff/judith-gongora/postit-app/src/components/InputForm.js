@@ -1,29 +1,33 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react'; 
 
 class InputForm extends Component {
     state = { text: '' }
 
-    handleInput = event => {
-        const text = event.target.value
+    handleChange = event => { //event aqui es el parametro de entrada
 
-        this.setState({ text })
+        this.setState({ text : event.target.value})
+    
     }
 
-    handleSubmit = event => {
-        event.preventDefault()
+    handleClick = () => {
 
-        this.props.onSubmit(this.state.text)
+        this.props.onClick(this.state.text)
 
         this.setState({ text: '' })
-    }
+     }
 
     render() {
-        return <form onSubmit={this.handleSubmit}>
-            <input value={this.state.text} placeholder="Write text here..." onChange={this.handleInput} />
+        console.log('InputForm', 'render')
 
-            <button type="submit"><i className="fas fa-plus"></i></button>
-        </form>
+        return <header>
+            <nav><img src="http://assets.stickpng.com/thumbs/5b06c23efad1cae04539afe5.png" alt=""/></nav>
+            <div className="form">
+                <textarea placeholder="input your new postit" value={this.state.text} onChange={this.handleChange} />
+                <button onClick={this.handleClick}>Add Postit</button> 
+            </div>
+        </header> 
+        
     }
 }
-
+// module.exports = InputForm
 export default InputForm

@@ -1,0 +1,62 @@
+@import url("//brick.a.ssl.fastly.net/Roboto:400");
+
+
+.container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background:#fff8e0;
+    width: 100%;
+    min-height: 70vh;
+}
+
+.navbar{
+    background: #f1c40f;
+    font-family: "Roboto";
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.navbar--horizontal{
+    display:flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+
+}
+
+.title {
+    color: #9b770b;
+}
+
+.error {
+    color: red;
+}
+
+.postit{
+    display: flex;
+}
+
+.postit__text{
+    height: 100px;
+    width: 200px;
+}
+
+.postit__buttons{
+    display: flex;
+    flex-direction: column;
+}
+.post{
+    list-style-type: none;
+}
+ul{
+    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+li{
+    margin:1.5vw;
+}
